@@ -1,0 +1,46 @@
+This document holds the documented ideas for our final project's mvp, a web app
+called MoveRight. The application came about after coming together with a single idea: the
+development of an application that tracks user movement in exercising and corrects their
+exercise form to ensure that they are targeting the correct muscle groups. We determined from
+the getgo that the application should allow for intelligent analysis of user movement by tracking 
+said movement by use of the camera device appended to the hardware where the software is running. 
+Given the depth of what this would entail in terms of development, in order to reduce the complexity of the development in this
+face, we determined to begin with a web app that eventually is ported into mobile; with the reason being
+that we could use this opportunity to better understand the packages and modules to utilize before committing
+to a much bigger project such as a mobile app. We also have the opportunity to scale the more complex aspects
+of the project. Given how everything is moving to AI, we felt the application could operate to the 
+vision that we have created by also having our own. Due to the daunting nature of intergating our own
+deep learning model, or even our own neural network, we can scale it down by using friendlier math
+patterns that allows us to capture and process data as given by captured images. 
+
+    Now, in order to have the program perform as a personal trainer that can correct form, we need 
+access to the camera that the computer can utilize to process and give real time feedback to our app's user. 
+This is where we introduce the first elements of the operation: he crux of the operation revolves around the 
+server side logic. The modules that will be used to access the user camera are the OpenCV module and MediaPipe module.
+With the availability of various packages for processing images and creating body endpoints, we chose to proceed With
+MediaPipie, as it is the more documented and explored of all the other modules created so far. Utilizing OpenCV was almost
+a given, since it is also well documented, explored and developed. 
+
+    Now, this is not where the backend finishes. Addressing the primary elements of the development phase, 
+we stuck to our strengths and are working primarily to mitigate a lot of potential weaknesses. Regarding 
+languages, we chose Python as the driver of our backend. The native language of our most important modules 
+are written in C++, but with Python we can operate and access hardware and software just the same. The 
+primary reason for choosing Python is, aside of having a language familiar to all members of the team, is the 
+access to the complementary modules for our twp primary modules, which will be needed for analyzing data. 
+As mentioned prior, MediaPipe and OpenCV are utilized for image data processing, and so, to aid us in the study of
+this data, we would need complementary modules such as NumPy, Pytorch, Pandas and Scikit-learn to create the brain 
+that will analyze the generated data. Thirdly, and most importantly, we can create our first layer of API endpoints
+with the use of modules such as Flask and its expansions, RESTx and JWT for access and security, respectively. Likewise, 
+databases and ORM can also be taken care of with Python's SQLAlchemy. Finally, our backend logic is tied with data atomicity
+and persistence, for which we can implement various databases. User profiles can be recorded with SQL style 
+databases such as SQLite and PosgreSQL, and NoSQL databases can be addressed with MongoDB's GridFS(more into this later)
+Alternatively, we could use AWS and/or Amazon S3 for a more solid storage of larger data files for meticulous analysis
+though that is to be discussed as the project increments. 
+
+    Having all server side logic established, its now a matter of discussing the front end for dynamic client side rendering
+and for a simple, yet memorable interface. 
+
+
+    Now, for the matter of our team, and our ideas so far: this this this and that.
+
+    With all these coming together, our minimum viable product .
