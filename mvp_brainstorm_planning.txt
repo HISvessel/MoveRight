@@ -36,7 +36,21 @@ recording movement, its meant to re shape the scope of fitness applications to a
 movement tracking and real time feedback to ensure the customer corrects their exercise form. Not just have a tool that tells us what to exercise, but how to exercise, and do it well. 
 
     As for our application, we would not be the first ones to target to this niche. There are several other applications that have incorporated AI into its core logic, which allows
-prompts for exercise recommendations to be made based on what the consumer can say about them. A fantastic approach for those who can accurately describe their situation or can
+prompts for exercise recommendations to be made based on what the consumer can say about them. A fantastic approach for those who can accurately describe their situation or already 
+obtained that information beforehand and are consequently looking for the next step to take. Handy, but situational. The use of the camera is also not novel, meaning other applications
+with this same techonology exists. Some applications have their trainer stand on the other side of the camera to engage with the client and utilize words of encouragement for customer to
+use as a sort of follow along. Other applications can access the user camera and track very light movements, others have a more robust system and a myriad of libraries designed to analyze
+various movements, yet behave as a fun game that incentivices and make the use of their technology fun. Yet, these products have taken years of development and not tackle the important issue:
+being accessible. In any ways, quite a lot of applications seem to segway into their own little niche, they stick to their design(since it is their strength), yet leave space for more to
+be developed. 
+
+    And so, what do we want to do? Well, to fulfill a more complete role. Have our trained PT model cover numerous roles, all for one final function: start a user profile that they can
+establish as a customer that needs a personal trainer, who can not only store their information, but also guide them in their training, give feedback on their form, give recommendations
+based on their performance, model comparisons to show what the correct our clients can aim for, scale out growth and progress through means of setting progressions and regressions, 
+training schemas and goals to accomplish. In essence, the application will behave fully like a personal trainer for our client to have in their pocket and on the go. The impact of which
+will be significant, as the end goal will be a realistic approach to bring an exercising agent, one that is smart, one that adapts to the user's need(based on the information being provided in their movement),
+one that behaves like the real thing.
+
 
 B) Team formation:
     Questions to answer:
@@ -89,15 +103,21 @@ databases such as SQLite and PosgreSQL, and NoSQL databases can be addressed wit
 Alternatively, we could use AWS and/or Amazon S3 for a more solid storage of larger data files for meticulous analysis
 though that is to be discussed as the project increments. 
 
-    Having all server side logic established, its now a matter of discussing the front end for dynamic server side rendering
-and for a simple, yet memorable interface.
+    Having all server side logic established, its now a matter of discussing the front end for dynamic server side rendering and for a simple, yet memorable interface. Far beyomd HTML, 
+CSS and JavaScript, we also plan to incorporate React as our preparation to port into mobile overtime. React is the way to go for this project, it is easy to pick up, resources
+are abundant for learning and the APIs provided make for great carryover to React Native, which will allow us to transition into a mobile app for all devices.  
 
    The project at this point seems to head in the desired direction, and the idea of learning and creating, as taught during our trimester, will once again come into play here.
 The reason being is that, in order to have the vision come to life, we must learn a new set of skills. Not just frameworks, but also more coding modalities and programming nuances
 with the tools that we have already learned. For the back end, we are utilizing SciKit, Numpy and Pandas. All very great tools for the project, yet one that will require a proper 
 and a novel training approach to be able to implement them in the scope of this operation. Likewise, the use of OpenCV and MediaPipe means that extra resources need to be learned by 
 all members involved, so tha core backend logic can complement interface and display functionality. Having all members acquainted with the tools for the job ensures that the vision is captured
-correctly for the client to experience. As such, it is to the responsiblity of the project assigned leader to ensurrre that all members are in the loop
+correctly for the client to experience. As such, it is to the responsiblity of the project assigned leader to ensurrre that all members are in the loop. In lieu of this, we reckon that there is 
+indeed a tight schedule and considerable risk, not just for learning skills, but also for developing as we learn. Some of the aforementioned dependencies are well within our scope, and given that we have a robust team
+for the task at hand, we can distribute everything equally to ensure that all pieces are constructed steadily. To ensure, however, that all is handled accordingly, careful and meticulous planning 
+is the key to go, with this being unanimously decided: that we need to stick to schedules and work fast. As we speak, all ideas written here are also part of all contributed for the official
+documentation and time is being actively invested on both resources and examples. It should also be mentioned that it is to the upmost and unwavering responsiblityof the project manager to ensure
+all members are educated in the packages and modules to be utilized. 
 
 
 D) Minimum Viable Product, future plans and conclusion:
