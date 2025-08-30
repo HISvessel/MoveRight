@@ -47,7 +47,7 @@ B) Team formation:
     With a considerable amount of moving parts, de projected for team roles and formations to conver all the bases accordingly. Our team of three: Jean Carrion, Joseph Gleason and Kevin Sanchez,
 has been assigned their respective roles based on the needs, the brains and planification and the strengths of each one of them. Jean was chosen due to 
 
-4) Technical approach:
+C) Technical approach:
     Topics to discuss:
     1) Our tech stack
     2) Reasons for choosing packages and dependencies
@@ -100,14 +100,13 @@ all members involved, so tha core backend logic can complement interface and dis
 correctly for the client to experience. As such, it is to the responsiblity of the project assigned leader to ensurrre that all members are in the loop
 
 
-
-6) Minimum Viable Product, future plans and conclusion:
+D) Minimum Viable Product, future plans and conclusion:
     Questions and topics to discuss:
     1) What is the big Picture?
-    ) What is the impact it will have?
-    ) What ideas were established and what was discarded?
-    2) How will the app work when put in demo?
-    3) What can we release in 3 months?
-    4) What can we leave for later?
+    2) What is the impact it will have?
+    3) What ideas were established and what was discarded?
+    4) How will the app work when put in demo?
+    5) What can we release in 3 months?
+    6) What can we leave for later?
 
     With all these coming together, our minimum viable product .
