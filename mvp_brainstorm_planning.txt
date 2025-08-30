@@ -105,7 +105,10 @@ though that is to be discussed as the project increments.
 
     Having all server side logic established, its now a matter of discussing the front end for dynamic server side rendering and for a simple, yet memorable interface. Far beyomd HTML, 
 CSS and JavaScript, we also plan to incorporate React as our preparation to port into mobile overtime. React is the way to go for this project, it is easy to pick up, resources
-are abundant for learning and the APIs provided make for great carryover to React Native, which will allow us to transition into a mobile app for all devices.  
+are abundant for learning and the APIs provided make for great carryover to React Native, which will allow us to transition into a mobile app for all devices. While we are not looking
+for something coagulated or complex, our interface should still be something clean, beautiful, memorable and above all simple. We look forward to all pages, transfer protocols
+and styling to follow a correct and engaging logic to prepare for the logic desired of our final product. So, while things may change aesthetically, we wish for page redirection
+and entities interaction to remain consistent all throughout the lifetime of the app. 
 
    The project at this point seems to head in the desired direction, and the idea of learning and creating, as taught during our trimester, will once again come into play here.
 The reason being is that, in order to have the vision come to life, we must learn a new set of skills. Not just frameworks, but also more coding modalities and programming nuances
@@ -128,5 +131,3 @@ D) Minimum Viable Product, future plans and conclusion:
     4) How will the app work when put in demo?
     5) What can we release in 3 months?
     6) What can we leave for later?
-
-    With all these coming together, our minimum viable product .
