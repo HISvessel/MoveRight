@@ -1,0 +1,2 @@
+Welcome to MoveRight. The contents of this repository are all to summarize everything that has been developed over the span of August 14 to August 31. Primarily, this
+contains a document where all ideas and decisions are written for context and development of the documentation.
