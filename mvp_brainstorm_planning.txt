@@ -1,17 +1,69 @@
 This document holds the documented ideas for our final project's mvp, a web app
-called MoveRight. The application came about after coming together with a single idea: the
+called MoveRight. 
+
+A) Initial idea and desire for the project:
+    Questions to answer:
+    1) Why did we choose the topic?
+    2) Where did it come from?
+    3) What is it meant to do?
+    4) Are we the firsts? If not, what can we do different?
+    
+    The application came about after coming together with a single idea: the
 development of an application that tracks user movement in exercising and corrects their
-exercise form to ensure that they are targeting the correct muscle groups. We determined from
-the getgo that the application should allow for intelligent analysis of user movement by tracking 
+exercise form to ensure that they are targeting the correct muscle groups. In this new digital age, many applications
+come and go, and with the advent of Artificial Intelligence, interfaces and app logics are becoming more engaging. Fitness
+has also seen this boom, with AI making its way into the already existing applications: creation of 
+fitness programs, from weekly microcycles to monthly mesocycles, and even to broader aspects of health, such as movement
+patterns, nutritional analysis, overall health, etc. Now, why exercising? Well, I am passionate about it, it changed my outlook on
+life and it helped me channel energy appropiately throughout my day. Exercising is something that should be a part of everyone's day.
+The thing is, while exercising is not something complex, it still requires proper attention for correct execution. Picture this: you start
+training, you are motivated, determined even, and your enthusiasm when it starts is uncontained. Or maybe it isnt, but nevertheless, you made up your
+mind to exercise. Many start their journey, only to find that they don't know how to exercise. Yet they still go for it, 
+even without the proper idea of whether they are doing it correctly. This can be demotivating in the tamest of cases, risky in the case of the
+more particular or extreme. This was something that I troubled me when I could not afford a personal trainer, yet still needed the knowledge and the
+feedback of an expert to guide me on this journey. Well, this is where the idea began to take shape. With technology becoming ever more present in our 
+lives, why not use it to solve this problem? Hence, MoveRight was born.
+
+    The purpose of the application is to target the more particular role of a personal trainer: someone, or something, that assessess your movement capacity
+and gives corrections according to your overall movements. So, how can we do it? Well, by modeling after actual personal trainers, of course. When you exercise with a personal
+trainer, they are constantly monitoring your exercise execution to ensure you are moving safely and correctly, to have you engage your muscles without compromising
+your health, whilst also making it fun and challenging. This is the first idea that came to mind to what our new app should do, that it should behave like an essential part
+of anyone's exercising journey. Sure, many other applications already exist, but the way apps have been built is almost exclusively towards exercise planning, agendas and such. While not bad, they
+lack that real time interaction that is characteristic of personal trainers. They are good for keeping tabs on your repetitions, but maybe not so much on ensuring you get a
+quality workout. They give static references to how you should lift, but they do not correct those tiny mistakes setting you back from having a quality workout. They may even include
+pre recorded voices, but not have the element of diversity that makes it, well, diverse. With MoveRight, we see to it that engaging is a must. The application intends to be more than just 
+recording movement, its meant to re shape the scope of fitness applications to a more sensible, practical and effective approach to fitness in the era of technology. How? By Utilizing
+movement tracking and real time feedback to ensure the customer corrects their exercise form. Not just have a tool that tells us what to exercise, but how to exercise, and do it well. 
+
+    As for our application, we would not be the first ones to target to this niche. There are several other applications that have incorporated AI into its core logic, which allows
+prompts for exercise recommendations to be made based on what the consumer can say about them. A fantastic approach for those who can accurately describe their situation or can
+
+B) Team formation:
+    Questions to answer:
+    1) Who are the members?
+    2) What are their strengths?
+    3) What are their roles in the team?
+
+    With a considerable amount of moving parts, de projected for team roles and formations to conver all the bases accordingly. Our team of three: Jean Carrion, Joseph Gleason and Kevin Sanchez,
+has been assigned their respective roles based on the needs, the brains and planification and the strengths of each one of them. Jean was chosen due to 
+
+4) Technical approach:
+    Topics to discuss:
+    1) Our tech stack
+    2) Reasons for choosing packages and dependencies
+    3) The amount of work to put in
+
+We have established the goal. And so, how do we get there? We determined from the getgo that the application should allow for intelligent analysis of user movement by tracking 
 said movement by use of the camera device appended to the hardware where the software is running. 
 Given the depth of what this would entail in terms of development, in order to reduce the complexity of the development in this
 face, we determined to begin with a web app that eventually is ported into mobile; with the reason being
 that we could use this opportunity to better understand the packages and modules to utilize before committing
 to a much bigger project such as a mobile app. We also have the opportunity to scale the more complex aspects
 of the project. Given how everything is moving to AI, we felt the application could operate to the 
-vision that we have created by also having our own. Due to the daunting nature of intergating our own
+vision that we have created by also having our own. Due to the daunting nature of integrating our own
 deep learning model, or even our own neural network, we can scale it down by using friendlier math
 patterns that allows us to capture and process data as given by captured images. 
+
 
     Now, in order to have the program perform as a personal trainer that can correct form, we need 
 access to the camera that the computer can utilize to process and give real time feedback to our app's user. 
@@ -37,10 +89,25 @@ databases such as SQLite and PosgreSQL, and NoSQL databases can be addressed wit
 Alternatively, we could use AWS and/or Amazon S3 for a more solid storage of larger data files for meticulous analysis
 though that is to be discussed as the project increments. 
 
-    Having all server side logic established, its now a matter of discussing the front end for dynamic client side rendering
-and for a simple, yet memorable interface. 
+    Having all server side logic established, its now a matter of discussing the front end for dynamic server side rendering
+and for a simple, yet memorable interface.
+
+   The project at this point seems to head in the desired direction, and the idea of learning and creating, as taught during our trimester, will once again come into play here.
+The reason being is that, in order to have the vision come to life, we must learn a new set of skills. Not just frameworks, but also more coding modalities and programming nuances
+with the tools that we have already learned. For the back end, we are utilizing SciKit, Numpy and Pandas. All very great tools for the project, yet one that will require a proper 
+and a novel training approach to be able to implement them in the scope of this operation. Likewise, the use of OpenCV and MediaPipe means that extra resources need to be learned by 
+all members involved, so tha core backend logic can complement interface and display functionality. Having all members acquainted with the tools for the job ensures that the vision is captured
+correctly for the client to experience. As such, it is to the responsiblity of the project assigned leader to ensurrre that all members are in the loop
 
 
-    Now, for the matter of our team, and our ideas so far: this this this and that.
+
+6) Minimum Viable Product, future plans and conclusion:
+    Questions and topics to discuss:
+    1) What is the big Picture?
+    ) What is the impact it will have?
+    ) What ideas were established and what was discarded?
+    2) How will the app work when put in demo?
+    3) What can we release in 3 months?
+    4) What can we leave for later?
 
     With all these coming together, our minimum viable product .
