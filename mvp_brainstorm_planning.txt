@@ -49,7 +49,7 @@ establish as a customer that needs a personal trainer, who can not only store th
 based on their performance, model comparisons to show what the correct our clients can aim for, scale out growth and progress through means of setting progressions and regressions, 
 training schemas and goals to accomplish. In essence, the application will behave fully like a personal trainer for our client to have in their pocket and on the go. The impact of which
 will be significant, as the end goal will be a realistic approach to bring an exercising agent, one that is smart, one that adapts to the user's need(based on the information being provided in their movement),
-one that behaves like the real thing.
+one that behaves like the real thing. It's distinctive, since it performs multiple things, but it is also purposeful, for it does so with a clear goal and direction in mind. 
 
 
 B) Team formation:
@@ -58,8 +58,12 @@ B) Team formation:
     2) What are their strengths?
     3) What are their roles in the team?
 
-    With a considerable amount of moving parts, de projected for team roles and formations to conver all the bases accordingly. Our team of three: Jean Carrion, Joseph Gleason and Kevin Sanchez,
-has been assigned their respective roles based on the needs, the brains and planification and the strengths of each one of them. Jean was chosen due to 
+    With a considerable amount of moving parts, we have projected for team roles and formations to conver all the bases accordingly. Our team of three: Jean Carrion, Joseph Gleason and Kevin Sanchez,
+has been assigned their respective roles based on the needs, the brains and planification and the strengths of each one of them. The role of documenting ideas and changes has been assigned to Joseph, the creative
+contributor and diagram creator has been assigned to Jean, and project direction and management has been given to Kevin. All the coding is also distributed equally: Jean will focus on the front end, 
+Kevin will focus on the back end, and Joseph will perform as a mix of both, with the ability to cover most of the bases. The peer coding approach to be taken is the conductor-guide approach, where we 
+can assign these roles and have them be interchangable to the respective roles. All decision making and last minute alterations are left to careful consideration as a team, which means no team proceeds
+without an established concensus. 
 
 C) Technical approach:
     Topics to discuss:
@@ -131,3 +135,73 @@ D) Minimum Viable Product, future plans and conclusion:
     4) How will the app work when put in demo?
     5) What can we release in 3 months?
     6) What can we leave for later?
+
+    This section describes in ample detail what our product will be.
+    What we want to do:
+        -> an app that guides the consumer to exercising correctly.
+        -> stores basic user credentials and all relevant captured movements.
+
+    
+    Ideas discussed:
+        What can the app do:
+            -> Open a camera, capture exercise movement, give feedback on the execution.
+            -> Give exercising recommendations after recording user. (Real time feedback, Post-workout analysis)
+            -> Use a control group of correct form as a metric to how consumer should move. 
+
+        The kind of training that was chosen:
+            -> Calisthenics or body weight exercises
+            -> Only 3 exercises as part of the MVP(pushups, squats, crunches)
+            -> Progressions and regressions will be a part of future upgrades,
+                1) First, we want to test that the back end logic works before adding more exercises.
+                2) With approach revolving around abstract classes classes and inherited subclasses, 
+                we would need to test this method for larger expansions and entity logic.
+    
+        Point of focus for app behavior when studying movement for analysis:
+            -> Emphasis on as correct form as possible, based on limb angles and body alignment.
+                1) The information collected will be used for one time analysis.
+                2) Memory should not be cluttered with too many files. Only what is relevant for future analysis.  
+            -> Alignments and angles are captured by camera, stored on NumPy arrays, passed over to Pandas' spreadsheets
+            and analized with use of both Pandas and SciKit-Learn.
+        
+        Points of focus for interface details:
+
+
+        Point of focus for consumer interface:
+            -> Consumer can sign up with correct credentials tied to their email.
+                1) Sign up can be done in:
+                    a) One step signup(all info at once, name, email, age, height weight and exercise frequency)
+                    b) two step signup(name and email first, the rest of the information is through a redirect link sent via email.)
+                2) Can we create a message board tied to their email?
+                3) Can we create a preset message and send it from the server to the email?
+            -> Consumer information about their body proportions is stored for app recommendations(exercise times, intensity, volume, frequency, etc).
+            -> Login session is protected through tokens and cookies. Only session users can access the camera to begin working out. 
+            -> A couple of important points about the exercise session include:
+                1) The site contains a separate page where the camera can be accessed.
+                2) To begin recording, the client selects the exercise they wish to train(pushups, squats or crunches)
+                3) Customer stands in front of the camera to begin pose estimation. These body points will anchor to a single user.
+                For our first version, it will scan the very first person standing in front of the camera and it will scan a single user.
+                4) The customer is then prompted to get into position to begin exercising, which will begin the process.
+                ****NOTE: for recording to begin, the customer will need to stand to have the camera record their side(which ever side)
+                5) As the consumer exercises, observations generated in real time will appear on the camera, which should prompt the user to follow its instructions
+                for accurate exercise form. 
+            -> Consumer will recieve a summary of their stats, the repetitions completed and the amounts completed correctly.
+            -> User recieves a set of key notes to take into consideration for their next session, aimed to promote a more quality concurrent exercise session.
+            -> Returning users are greeted back, while new users are welcome to the application.
+            -> 
+    
+    The MVP, our desired product, should allow us to have all the aforementioned points established upon release. All points have a high probability of feasability, meaning that
+with correct planning every point can have us come close to a considerably polished product ready for expansion in a span of 3 months. With many ideas and directions this could be lead to, 
+our ultimate goal is to give a minimum taste for greater things to come. With many exercises and training modalities that could be explored with this application, the approach of using Calisthenics, 
+or bodyweight exercises, offers a great mix of everything: small, yet complete. This also means as to why we decided for only 3 different exercises: they are a staple in almost every workout and are 
+self sufficient for a beginner to start off with. The approach to extend this to more intermediate and advanced lifters(people that exercise) would be to add more reps or to add variations of these exercises.
+The concept of variations has been left as a part of future upgrades to the app, since it requires careful planification of objects and logic, all with its own set of rules and focal points for the
+camera and intelligence to study. As such, just three exercise will leave us with enough time and space to explore the server logic, cement it, yet provide a very complete product for the customer to
+utilize, and finally, to accurately plan all expansions based on all successful ideas and failed ones. While the application should remain minimal in terms of the interface, it does not mean that we shouldn't
+add enough aesthetics to give consumers something memorable. As the app grows, growth developed for the back end will have the interface grow and expand as a byproduct. For example, so far, we can establish
+a quick sign up logic for the user to get started as soon as possible. Eventually, this can change into users having a welcome message sent from the server into the consumers email address. With this, a more abundant set
+of questions can be asked the user, all with the idea of implementing as much a real experience and simulation to a personal trainer as it could possibly be done. 
+Finally, and most importantly, we have the chance to prepare ourselves for what could be the largest portion that completes the desired expansions, but opens a new world of design: transitioning from a 
+web app into a mobile app and, finally, utilizing a richer learning model that better engages the user. The learning model will grow over time and execute as a very real personal trainer, that can
+invite you to exercise with push notifications, give more accurate recommendations from a more developed analysis model that better studies the user movements, robust body anchor points that study
+larger concepts that can include equilibrium, disproportions, and also, have the PT give more exercises, progressions and regressions that go innaccordance with the user's level and growth. These progressions
+can also be made into more complex exercises exclusive to calisthenics and street workout. This, and many more things could happen over time. 
