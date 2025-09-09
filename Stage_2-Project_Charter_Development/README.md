@@ -1,4 +1,4 @@
-This is the second stage of the final project, where we are more focused on the technical and planning development of the final product to resent on demo day for Nov 14, 2025. To structure our project more concisey, we took the phases approach to divide how the idea and product development are going to be staged throughout its various phases.
+This is the second stage of the final project, where we are more focused on the technical and planning development of the final product to resent on demo day for Nov 14, 2025. To structure our project more concisey, we took the phases approach to divide how the idea and product development are going to be staged throughout its various phases. To accomplish our goal, we will create a Project Charter, as a high level technical guide that will contain all pertinent information regarding the outcome of our final project and the development of phases and stages that will occur up until the final day.
 
 Project Management
 PM is the activity of creating and developing ideas tactics and techniques aimed at fulfilling or completing a measurable and specific goal to contribute to the succesful completion of a project or project portfolio. This has become an essential part to any project, for creating general and particular goals, setting timelines, setting up small and large hauls of tasks and goals to accomplish and scaling development in a precise fashion, ensuring you get quality control and an increased chance of success.
@@ -11,10 +11,20 @@ Top 5 things to knw about PM
 5) Project management is an ongoing process, meaning that continuous improvement and change are an integral part of maintaining a strong project management strategy.
 Understanding the Essentials: Project Managemen
 
+Step 1) Defining project objectives:
+-> Here is a list of things to go over as a team and arrive a concensus over which objectives seem to relate more to our porject's overall ojectives:
+    1)
 
+Step 2) Stakeholders and Team Roles
+
+Step 3) Defining Scope
+
+Step 4) Risks
+
+Step 5) Defined High Level Plan
 
 Roadmap:
--> This roadmap entails how we are creating the entire document by the end of this project phase. The roadmap will be divided in two differemt sections: the sub-roadmap for the Back-End, and the sub-roadmap for the Front-End.
+-> The roadmap will be divided in two different sections: the sub-roadmap for the Back-End, and the sub-roadmap for the Front-End.
 
 
 Phase 0 -> Research:
@@ -36,3 +46,5 @@ Phase 4 ->
 
 Phase 5 ->
 
+Charter Document Structure:
+-> This Charter lists how we are creating the entire document by the end of this project phase. It consists of the following elements in this order: Objectives, Team Roles, Scope Definition, Risks and Mitigation and Planification. The objectives pertain to the outlook and product by defining what it will do and to whom it is intended for. We will define team members for the developer roles as well for their contribution to decision making, ideas, rissk, mitigations and other things. Scope definition will help up exact what our focus will be for development phase, what will be contributeed for future preparations and development, and finally what will not be added to our project ad what will not be part of our project. Risks will more closely describe what setbacks and roadblocks we are currently phasing and what we could phase, as well as the team approach will be for these. Developing this section will be akin to team roles, product scope, tech development, tech stack and programming capacities of every member involved. Finally, a high level, concise, timeline oriented weekly planing will be written. The universal approach will be written through a roadmap that is divided as step by step into the programs growth and phase development, useful for separation of concerns, clearly defined team roles, assigning of tasks and topics, and finally, the roadmap is particularly described for all phases of software scope, where FE, BE and DB are specifically designed and tested. 
