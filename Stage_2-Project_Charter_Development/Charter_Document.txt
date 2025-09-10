@@ -1,0 +1,74 @@
+1) Project objectives(what the product is, what innovations are being used and what
+solutions are being solved)
+-> A personal training app that checks the user form. 
+-> Create confidence in the user to know that they are exercising correctly.
+-> Ease access to knowledge of proper form and practices for exercise.
+-> Teaches the user a new exercise. 
+-> Revolutionizes the way of handling and delivering movement feedback.
+-> Tracks user's limbs and processes movement through numerical and empirical data.
+-> 
+
+2) Stakeholders and Team Roles:
+
+These are the programming and developer roles assigned to each member:
+Joseph -> will be working as a full stack developer, approaching the structural and integral 
+design patterns for the web application.
+Back end:
+For the back end role, he will work alongside Kevin to assist in the creation of classes
+and subclasses necessary for entity logic and REST API methods by use of Flask and similar packages
+and dependencies. He will also have a hand with creating the database schemas and structures. 
+As part of his development responsibilities, his assistance will also require the best methods to 
+implement for concise and efficient, yet safe, design web patterns. As such, research in regard to this 
+will be required for a successful project. (Flask, Classes and Objects and Databases)
+
+Front end: 
+Likewise, he will also work alongside Jean with creating the essential layers for the Front End, such 
+as the HTML documents and the CSS stylesheets. During this phase, it will also be beneficial and necessary to
+discuss the HTTPS methods to ensure that the client recieves safe operation but also correctly structured
+page redirection and beautiful client interface with style and coloring. (Structuring with HTML, Styling with CSS)
+
+Jean -> will be assigned to the Front End development of the application. As a solely front end developer for this project, 
+he is the man in charge for the development and control of the projects entire front end lifecycle, ensuring customers get A
+memorable web app that catches the attention of the consumer, integrates all important portions of the back end logic and safely 
+displays all correct and relevant information to the client such as movement, analysis and feedback. Aside of working alongside
+Joseph to create and manage structure and styling, he will also work on dynamic scripting with JavaScript and for interface
+creation and direction with React, the library utilized to transfer server logic unto a web application. As the front end developer, 
+he will ensure that all server logic works well with dynamic scripts and Flask routes for solid logic. Likewise, he will also
+develop our main stylistic patterns and scripting patterns for a beautiful website.
+Front End: (Scripting with JavaScript for Dynamic FE, Interface with React)
+
+Kevin -> will be assigned to the Back End development of the application. As a solely back end developer, his
+responsibilities ensure that all server side logic ties well, is precise, is delivered correctly to the front end
+and takes customer safety and information preservation. Aside of working alongside Joseph with the creation of 
+all CRUD methods, all entities, all classes and database schemas, he will also research and develop the main crux of the 
+operation that pertains to the display of images, compiling of user movement, processing of movement data and feedback model
+for consumer satisfaction. To this extent, it is his responsiblityto ensure all the relevant packages, dependencies and coding
+paradigms are up to the desired output and information adds congruently.
+Back End: Server Logic with OpenCV, MediaPie, data processing with NumPy Pandas Sci Kit
+
+3) Scope definition:
+
+4) Risks:
+cv2.VideoCapture() <--- creates a process to read camera in: the device it is running, a separate camera or null
+-> Potential worst case scenario: a customer has a device with no camera that can be acessed. 
+The solution? Customer can send a video of themselves to allow for service to be provided, albeit not in real time.
+
+-> Incorrect feedback, which equals to data being processed incorrectly in proportion to the user or their movement. 
+The solution? Test on numerous consumers of diverse body proportions and focus on obtaining a consistent output.
+Test an obviously incorrect exercise technique, and a seemingly correct technique but with subtle flaws. 
+Finally, test textbook correct form and focus on obtaining consistently correct output from the training model.
+
+-> Bad data storage, which indicates incorrect setting of database and/or broken API logic. This process requires a lot 
+of anticipation and preparation for consumer logic. The solution? Invest into research and do it early, establish schema, classes
+and CRUD behavior early in the brainstorming phase to avoid any unnecessary recreation of databases down the road. 
+
+-> Bad interface, which may equal to poorly structured front end development and/or wonky server side code.
+
+Application should work correctly with either Flask or ExpressJS. The app routes will be chosen
+depending on team execution. 
+
+App runs, but it is too slow. 
+
+
+
+5) High Level planning:
