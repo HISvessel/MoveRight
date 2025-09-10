@@ -16,12 +16,23 @@ Step 1) Defining project objectives:
     1)
 
 Step 2) Stakeholders and Team Roles
+-> This section will focus on the roles, responsibilities and contributions made by all team members, what the relevance of these positions are and the key aspects of their roles, eg. what they will contribute with in terms of programming planning and decision making. 
+
 
 Step 3) Defining Scope
+-> To define the project scope, it is necessary to know what we will present and how it will be presented. These scope definition bulletpoints are going to be written in accordance to what is established as our project goal at the beginning. 
+-> Concepts that are in-scope mean that they will be included in our MVP
+-> To define the project scope, the following keypoints will be necessary:
+    1) Define the specifics - identify potential objectives and constraints. Define who you need in your team, what you need for your product to come to life, the time you have for each aspect(your budget), the time for testing and the time for development. 
+    2) Set deadlines - indicate by which time you expect concepts and tools to be ready for deployment at whatever stage you will program. 
+    3) Create a budget - our budget is time in this scenario, as well as all resources for the preparing of the porgramming interface. 
+    4) Write a scope statement - this is written for the purpose of sharing and getting members on board with all ideas established.
 
 Step 4) Risks
+-> This portion pertains of the probability of something going wrong as well as the consequences and mitigation tactics for it going wrong and preventing it from happening. To study and compile a list of all possible WSCs, we need to carefully analyze our tools and our objects, such as budgets, documents, resources etc....... This way, we can make a comprehensive risk analysis document that can help us plan all mitigation tactics. This approach can be elaborated as a problem-solution flowchart by taking all compiled list and annotations from previous documents, as well as keeping tabs on other potential issues during the development phase. 
 
 Step 5) Defined High Level Plan
+-> 
 
 Roadmap:
 -> The roadmap will be divided in two different sections: the sub-roadmap for the Back-End, and the sub-roadmap for the Front-End.
@@ -36,7 +47,7 @@ For the front-end, Phase 0 is also the period where we will explore all the tool
 
 This phase of the project will make sure that we do enough research of our tools, get familiar with them, and utilize them at the time of development. 
 
-Phase 1 -> 
+Phase 1 -> Preparation of technical documentation
 
 Phase 2 ->
 
