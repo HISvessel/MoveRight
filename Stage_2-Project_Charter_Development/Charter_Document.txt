@@ -1,0 +1,175 @@
+1) Project objectives(what the product is, what innovations are being used and what
+solutions are being solved)
+-> A personal training app that checks the user form. 
+-> Create confidence in the user to know that they are exercising correctly.
+-> Ease access to knowledge of proper form and practices for exercise.
+-> Teaches the user a new exercise. 
+-> Revolutionizes the way of handling and delivering movement feedback.
+-> Tracks user's limbs and processes movement through numerical and empirical data.
+
+    Move Right is a web application that was created with the purpose of creating a training tool
+assisted with computer vision, data capture and processing. The project goal is to use these programming
+tools to provide consumer the satisfaction and confirmation to know that they are exercising correctly. We go
+about this method by taking video captures of consumers exercising, displaying a pose estimation landmarking object 
+over the user's body and tracking their limbs as they perform an exercising movement. This landmark object that sits
+atop the user creates empirical data that is captured by the server and analized in real time for providing ready to use
+information to give exercise form feedback to the consumer to correct posture or exercise form should the need for it arise. 
+
+    Having metric data, we have the underlying goal to accomplish correct analysis and accurate and consistent logic. Since 
+the web application has the large goal of obtaining quantified data for analysis instead of using the eyes and expertise of 
+an actual physical human guiding you with your movement, the application must meet three important criteria for success: 
+    1) The data is obtained consistently upon a single user.
+    2) The data obtained and feedback given works for many individuals of varying backgrounds.
+    3) Feedback output is provided correctly on all possible scenarios(correct and incorrect form)
+With these smaller goals to accomplish a bigger goal mentioned above, the web application has the secondary goal of 
+confirming the use of numerical and empirical data for body movement and exercising. See, this technology has other existing
+applications in the realm of exercising and body movement, so with this application we can further invest into the research of 
+utilizing numerical data for movement correctness and body health as opposed to simple visual cues. Furthermore, this can
+allow the study of machine learning and algorithmic behaviour as tools to improve human living move forward into the new age.
+
+2) Stakeholders and Team Roles:
+
+Internal Stakeholders:
+Project Manager - Kevin
+
+Developers:
+    Joseph -> 
+    
+    Full stack developer role with the following responsibilities:
+        a) Back End - classes, API routes and endpoints(alongside Kevin).
+        b) Front End - page structure and styling(alongside Jean).
+        c) Databases - schema development(alongside Kevin).
+will be working as a full stack developer, approaching the structural and integral 
+design patterns for the web application.
+Back end:
+For the back end role, he will work alongside Kevin to assist in the creation of classes
+and subclasses necessary for entity logic and REST API methods by use of Flask and similar packages
+and dependencies. He will also have a hand with creating the database schemas and structures. 
+As part of his development responsibilities, his assistance will also require the best methods to 
+implement for concise and efficient, yet safe, design web patterns. As such, research in regard to this 
+will be required for a successful project. (Flask, Classes and Objects and Databases)
+
+Front end: 
+Likewise, he will also work alongside Jean with creating the essential layers for the Front End, such 
+as the HTML documents and the CSS stylesheets. During this phase, it will also be beneficial and necessary to
+discuss the HTTPS methods to ensure that the client recieves safe operation but also correctly structured
+page redirection and beautiful client interface with style and coloring. (Structuring with HTML, Styling with CSS)
+
+    Jean -> 
+    
+    Front End developer with the following responsibilities:
+        a) Structure and Styling(alongside Joseph).
+        b) Page dymanics and scripting.
+        c) interface logic and aesthetics.
+    
+    will be assigned to the Front End development of the application. As a solely front end developer for this project, 
+he is the man in charge for the development and control of the projects entire front end lifecycle, ensuring customers get A
+memorable web app that catches the attention of the consumer, integrates all important portions of the back end logic and safely 
+displays all correct and relevant information to the client such as movement, analysis and feedback. Aside of working alongside
+Joseph to create and manage structure and styling, he will also work on dynamic scripting with JavaScript and for interface
+creation and direction with React, the library utilized to transfer server logic unto a web application. As the front end developer, 
+he will ensure that all server logic works well with dynamic scripts and Flask routes for solid logic. Likewise, he will also
+develop our main stylistic patterns and scripting patterns for a beautiful website.
+Front End: (Scripting with JavaScript for Dynamic FE, Interface with React)
+
+    Kevin -> 
+    
+    Back End developer with the following responsibilities:
+        a) classes, API routes and endpoints(alongside Joseph).
+        b) server side logic and data manipulation.
+        c) source code containerizing.
+    
+    will be assigned to the Back End development of the application. As a solely back end developer, his
+responsibilities ensure that all server side logic ties well, is precise, is delivered correctly to the front end
+and takes customer safety and information preservation. Aside of working alongside Joseph with the creation of 
+all CRUD methods, all entities, all classes and database schemas, he will also research and develop the main crux of the 
+operation that pertains to the display of images, compiling of user movement, processing of movement data and feedback model
+for consumer satisfaction. To this extent, it is his responsiblityto ensure all the relevant packages, dependencies and coding
+paradigms are up to the desired output and information adds congruently.
+Back End: Server Logic with OpenCV, MediaPie, data processing with NumPy Pandas Sci Kit
+
+External stakeholders:
+    1) Sean Cardona - programming instructor and development counselor.
+
+    2) Adam Beguelin - programming instructor and development counselor.
+   
+    3) Jeremy Reyes - known associate of Kevin, personal training coach, third party guide for exercising and form correctnesss.
+
+    4) Target #1 - test control consumer and tester
+
+    5) Target #2 - test control consumer and tester
+
+3) Scope definition:
+
+In Scope:
+    1) Single training modality
+
+    2) Single hardware
+
+    3) Simple machine learning model
+
+Out of Scope:
+    1) Variety of exercising:
+    > MVP will focus on a short list of exercises for the development of correct logic and
+    consistent output. More exercises will be developed as the technology and resources are less stringent.
+
+    2) Multiple training discipline:
+    > MVP will focus on a single training modality for the sake of correct and concise development. Likewise, 
+    training methods that require other external equipment will be avoided for ease of use and less consumer limitations.
+
+    3) Exercise progressions and regressions:
+    > this pertains to recommending specific exercises that will bring the user to a harder or easier
+    level which go to their needs. 
+
+4) Risks:
+cv2.VideoCapture() <--- creates a process to read camera in: the device it is running, a separate camera or null
+-> Potential worst case scenario: a customer has a device with no camera that can be acessed. 
+The solution? Customer can send a video of themselves to allow for service to be provided, albeit not in real time.
+
+-> Incorrect feedback, which equals to data being processed incorrectly in proportion to the user or their movement. 
+The solution? Test on numerous consumers of diverse body proportions and focus on obtaining a consistent output.
+Test an obviously incorrect exercise technique, and a seemingly correct technique but with subtle flaws. 
+Finally, test textbook correct form and focus on obtaining consistently correct output from the training model.
+
+-> Bad data storage, which indicates incorrect setting of database and/or broken API logic. This process requires a lot 
+of anticipation and preparation for consumer logic. The solution? Invest into research and do it early, establish schema, classes
+and CRUD behavior early in the brainstorming phase to avoid any unnecessary recreation of databases down the road. 
+
+-> Bad interface, which may equal to poorly structured front end development and/or wonky server side code.
+
+Application should work correctly with either Flask or ExpressJS. The app routes will be chosen
+depending on team execution. 
+
+App runs, but it is too slow. 
+
+
+
+5) High Level planning:
+
+-> The process will be divided in 5 phases and are accorded as following: 
+
+Phase 1 -> Process of decision making.
+This process lasts an entire month from the inception of the idea and the choosing of all
+resources to utilize up until everything is recompiled for the technical documentation.
+This process involves:
+    a) Research into our software and hardware tools
+    b) Meetings to discuss all compiled information
+    c) Decision making for choosing in scope and out of scope.
+
+Phase 2 -> Preparation of technical documentation
+This second phase will begin after deciding every aspect of the project in terms of concretion
+and abstraction. These two weeks are the time for any final alterations to our tech stack, but we
+will focus on making a document to present everything in order and begin tracking our development process.
+
+Phase 3 -> Coding
+ Stage 1 Coding: Structures(Front End) Classes and Endpoints for API(Back End)
+
+Phase 4 -> Testing and Debugging
+ Stage 1 Debugging
+
+Phase 5 -> Project Closure and Demo preparation
+Tweaking the final details and debugging whatever is necessary
+**Note: by this point in time, every change should be VERY MINOR
+Prepare for demo day. 
+
+    
