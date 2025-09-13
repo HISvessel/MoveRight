@@ -32,6 +32,10 @@ allow the study of machine learning and algorithmic behaviour as tools to improv
 Internal Stakeholders:
 Project Manager - Kevin
 
+Research and development - Kevin, Joseph and Jean
+
+Documentation - Joseph
+
 Developers:
     Joseph -> 
     
@@ -103,9 +107,7 @@ External stakeholders:
 
 In Scope:
     1) Single training modality
-
     2) Single hardware
-
     3) Simple machine learning model
 
 Out of Scope:
@@ -136,9 +138,6 @@ of anticipation and preparation for consumer logic. The solution? Invest into re
 and CRUD behavior early in the brainstorming phase to avoid any unnecessary recreation of databases down the road. 
 
 -> Bad interface, which may equal to poorly structured front end development and/or wonky server side code.
-
-Application should work correctly with either Flask or ExpressJS. The app routes will be chosen
-depending on team execution. 
 
 App runs, but it is too slow. 
 
