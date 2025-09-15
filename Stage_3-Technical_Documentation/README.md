@@ -1,0 +1,1 @@
+This is the third stage of the project, where we will create the technical documentation of our web application. 
