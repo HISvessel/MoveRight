@@ -1,3 +1,4 @@
+```mermaid
 graph TB
     %% Frontend Layer
     subgraph "Frontend Layer"
