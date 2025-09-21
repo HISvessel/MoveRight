@@ -3,8 +3,8 @@
 1. As a <ins>new user</ins>, I want to create an account so that I can start using MoveRight's progress tracker and/or account preferences/personalization.
 Mockup: <ins>MoveRight</ins> provides a signup page for the user to provide their email and password as profile credentials.
 
-2. As a <ins>new trainee</ins>, I want to record my workout and get form correction so that I can improve my technique.
-Mockup: <ins>Move Right</ins> provides a recordable camera as an interactable object for user recording. 
+2. As a <ins>new trainee</ins>, I want to record my workout and watch later.
+Mockup: <ins>Move Right</ins> provides a camera instance that records a user session and stores that object as a video in database.
 
 3. As a <ins>regular user</ins>, I want to track my form improvement over time so that I can see my progress and stay motivated.
 Mockup: <ins>Move Right</ins> offers a server logic to interpret user movement as data to process and records it in a document to be stored in a local database.
@@ -26,3 +26,5 @@ Mockup: <ins>Move Right</ins> provides an About Us page and a Testimonial sectio
 9. As a user, I want to see all of my previous recordings of the various exercises I performed and see how much I have grown. 
 Mockup: <ins>Move Right </ins> stores all recorded videos in a library attached to the user account, letting them see all instances of their recording. 
 
+10. As a <ins>user</ins>, I want to start an exercise session so that it can give me the desired feedback.
+Mockup: <ins>Move Right's</ins> exercise page allows a user to select an exercise they want to improve upon and set a counter of how many reps they want to perform for live feedback. 
