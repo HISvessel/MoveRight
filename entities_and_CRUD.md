@@ -61,3 +61,4 @@ Sequence diagrams scenarios:
 1. User signup diagram(Request, API, server, database, back to API, response)
 2. User exercising diagram(Request, API, server code, back to API, response)
 3. User fetching stored data(request, API, server database, back to API, response)
+  
