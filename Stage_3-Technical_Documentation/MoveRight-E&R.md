@@ -4,6 +4,8 @@
 classDiagram
 class User{
     -String id
+    -Datetime created_at
+    -Datetime updated_at
     -String first_name
     -Strign last_name
     -String email
@@ -11,7 +13,6 @@ class User{
     -Float weight
     -int feet_height
     -int inches_height
-
 }
 class Camera{
     -String id

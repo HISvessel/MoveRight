@@ -19,7 +19,7 @@ graph TB
         PoseDetection[Pose Detection Engine<br/>MediaPipe]
         FormAnalysis[Form Analysis Algorithm<br/>Custom Python Logic]
         AngleCalc[Angle Calculation<br/>NumPy/Mathematical Processing]
-        Scoring[Scoring System<br/>Scikit-learn ML Model]
+        Scoring[Scoring System<br/>TensorFlow-learn ML Model]
     end
 
     %% Data Layer
