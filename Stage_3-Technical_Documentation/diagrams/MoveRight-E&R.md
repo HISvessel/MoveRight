@@ -51,7 +51,7 @@ class Video
 
 User --> Review: writes
 User --> Camera: uses object
-Camera --> Video: generates
+Camera --> Video: generates a new video
 User <--o Video: saves
-Feedback --o Video: pertains to accessed data
+Feedback --o Video: analyzes video frames
 Feedback --> User: is about
