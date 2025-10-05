@@ -180,7 +180,15 @@ class User(BaseClass):
 
     def add_video(self):
         """this method will add videos as items to a miniature list
-        that will be displayed to the user."""
+        that will be displayed to the user.
+        
+        this will store a list of dictionaries, that contain
+        the key/value pairs of the video by their filename and
+        date of creation
+        
+        the filename will be a formatted string containing:
+        1. user_id
+        2. exercise_selected"""
         pass
 
     def to_dict(self):
