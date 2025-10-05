@@ -67,7 +67,13 @@ class User(BaseClass):
 
     @age.setter
     def age(self, input):
-        pass
+        try:
+            self.age = input
+        except TypeError and ValueError:
+            if type(input) is not int:
+                raise TypeError('Age must be an number')
+            if self.age < 1: #pending change, observe behavior
+                raise ValueError('You must be of valid age.')
 
     #setting the feet for a value between 3 and 7 feet
     @property
@@ -76,7 +82,13 @@ class User(BaseClass):
 
     @feet.setter
     def feet(self, input):
-        pass
+        try:
+            self.feet = input
+        except TypeError and ValueError:
+            if type(input) is not int:
+                raise TypeError('Feet must be a valid number')
+            if 3 < input < 8:
+                raise ValueError('Please enter a valid feet measurement.')
 
 
     #setting the inches to a value between 0 and 11
@@ -86,7 +98,13 @@ class User(BaseClass):
 
     @inches.setter
     def inches(self, input):
-        pass
+        try:
+            self.inches = input
+        except TypeError and ValueError:
+            if type(input) is not int:
+                raise TypeError('Inches must be a valid number')
+            if 0 < input < 12:
+                raise ValueError('Please enter a valid measurement in inches.')
 
     #setting the weight to be greater than 0(no judgement if they weight 1 single lbs)
     @property
@@ -95,7 +113,13 @@ class User(BaseClass):
 
     @weight.setter
     def weight(self, input):
-        pass
+        try:
+            self.weight = input
+        except TypeError and ValueError:
+            if type(input) is not int:
+                raise TypeError('Your weight must be a number')
+            if 0 > self.weight:
+                raise ValueError('Enter your valid weight')
 
     #set admin to True
     #private method that no one sees
