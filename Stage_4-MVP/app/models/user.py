@@ -57,8 +57,13 @@ class User(BaseClass):
         pass
 
     def verify_email(self, email):
-        """class method for verifying email existence"""
-        pass
+        """class method for verifying correct email pattern"""
+        #domain_suffix = ['yahoo', 'gmail', 'outlook', 'icloud']
+        #valid = [suffix for suffix in domain_suffix]
+        #test yahoo.com pattern, then proceed to make separate methods for other domain mails
+        pattern = r'^[\w\.-]+@yahoo\.com$'
+        return re.match(pattern, email) is not None
+
 
     #setting the age property for a value greater than 0
     @property
