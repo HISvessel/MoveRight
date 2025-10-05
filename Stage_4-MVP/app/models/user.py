@@ -46,6 +46,21 @@ class User(BaseClass):
         #special constructor for administrator privileges
         #administrator can view all entities and flush the database during testing period
         self._admin = False
+    
+    #preparing ORM structure for RDBMS schema
+    """__table__ = 'users'
+    first_name = db.Column()
+    last_name = db.Column()
+    age = db.Column()
+    feet(height) = db.Column()
+    inches(height) = db.Column()
+    weight = db.Column()
+
+    review = relationship()
+    """
+
+    #preparing non relational object mapping for video storage using pymongo
+    """Mongo DB document based ORM under construction"""
 
     def hash_password(self):
         """password hashing method"""
@@ -63,7 +78,6 @@ class User(BaseClass):
         #test yahoo.com pattern, then proceed to make separate methods for other domain mails
         pattern = r'^[\w\.-]+@yahoo\.com$'
         return re.match(pattern, email) is not None
-
 
     #setting the age property for a value greater than 0
     @property
