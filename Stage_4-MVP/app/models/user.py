@@ -34,10 +34,10 @@ class User(BaseClass):
         self.last_name = last_name
         self.email = email
         self._password = self.hash_password(password) if password else None
-        self._age = age
-        self._feet = feet
-        self._inches = inches
-        self._weight = weight
+        self.age = age
+        self.feet = feet
+        self.inches = inches
+        self.weight = weight
 
         #an optional feature that can be seen at the push of a button
         #if no videos are stored, a prompt message will be placed instead

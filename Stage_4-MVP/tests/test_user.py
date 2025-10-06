@@ -53,3 +53,4 @@ print(f"✓ Password verification (wrong): {user2.verify_password('WrongPass')}"
 print(f"✓ Email validation (yahoo): {user2.verify_email('test@yahoo.com')}")
 print(f"✓ Email validation (gmail): {user2.verify_email('test@gmail.com')}")
 print(f"✓ Validation errors: {user2.validate_account()}")
+print(f"{user2.first_name} is {user2.age}years old, weights {user2.weight}lbs and is {user2.feet}' {user2.inches}'' tall")
