@@ -62,14 +62,20 @@ class User(BaseClass):
     #preparing non relational object mapping for video storage using pymongo
     """Mongo DB document based ORM under construction"""
 
-    def hash_password(self):
+    def hash_password(self, password):
         """password hashing method"""
-        pass
+        password = self._password.encode('utf-8')
+        salted_pwd = bcrypt.gensalt()
+        hashed_pwd = bcrypt.hashpw(salted_pwd, password)
+
+        return hashed_pwd
 
     def verify_password(self, password):
         """this class method verifies that the password is hashed
         and matches the input given by the user when class is created"""
-        pass
+        if not self._password:
+            return False
+        return bcrypt.checkpw(password.encode('utf-8'), self._password.encode('utf-8'))
 
     def verify_email(self, email):
         """class method for verifying correct email pattern"""
@@ -78,6 +84,7 @@ class User(BaseClass):
         #test yahoo.com pattern, then proceed to make separate methods for other domain mails
         pattern = r'^[\w\.-]+@yahoo\.com$'
         return re.match(pattern, email) is not None
+
 
     #setting the age property for a value greater than 0
     @property
@@ -93,6 +100,7 @@ class User(BaseClass):
                 raise TypeError('Age must be an number')
             if self.age < 1: #pending change, observe behavior
                 raise ValueError('You must be of valid age.')
+
 
     #setting the feet for a value between 3 and 7 feet
     @property
