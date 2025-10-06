@@ -22,8 +22,8 @@ class BaseClass():#db.Model):
         """temporary constructor method for the base class."""
 
         self.id = uuid.uuid4()
-        self.created_at = datetime.date()
-        self.updated_at = datetime.date()
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
     
     def update(self):
         """class method for updating the timestamp of updating an element."""
@@ -39,6 +39,6 @@ class BaseClass():#db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "created at": self.created_at,
-            "updated at": self.updated_at
+            "created at": self.created_at.isoformat(),
+            "updated at": self.updated_at.isoformat()
         }
