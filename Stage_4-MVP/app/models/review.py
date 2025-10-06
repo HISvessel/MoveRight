@@ -1,5 +1,6 @@
 from app.models.base_class import BaseClass
-
+from app.models.db_model import db
+from flask_sqlalchemy.orm import relationship
 
 """the following script contains a review class.
 
@@ -23,6 +24,15 @@ class Review(BaseClass):
         self.title = title
         self.comment = comment
         self.rating = rating
+
+    #adding RDBMS schema
+    """__table__ = 'reviews'
+    
+    id = db.Column()
+    title = db.Column()
+    comment = db.Column()
+    rating = db.Column()
+    """
     
     def to_dict(self):
         data = super().to_dict()
