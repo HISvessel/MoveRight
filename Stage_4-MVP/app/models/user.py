@@ -178,11 +178,11 @@ class User(BaseClass):
         if not self._password:#checks for password entry
             errors.append('Please enter a password')
 
-        if not self.verify_password(self._password): #checks for valid password
-            errors.append('Invalid password, please try again.')
+        # if not self.verify_password(self._password): #checks for valid password
+        #     errors.append('Invalid password, please try again.')
 
-        if self._password < 10: #checks for password length
-            errors.append('Password must be at least 10 characters long')
+        # if self._password < 10: #checks for password length
+        #     errors.append('Password must be at least 10 characters long')
 
         return errors
 
