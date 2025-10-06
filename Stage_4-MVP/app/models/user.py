@@ -64,9 +64,9 @@ class User(BaseClass):
 
     def hash_password(self, password):
         """password hashing method"""
-        password = self._password.encode('utf-8')
+        passcode = password.encode('utf-8')
         salted_pwd = bcrypt.gensalt()
-        hashed_pwd = bcrypt.hashpw(password, salted_pwd)
+        hashed_pwd = bcrypt.hashpw(passcode, salted_pwd)
 
         return hashed_pwd
 
