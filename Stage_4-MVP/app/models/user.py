@@ -94,7 +94,7 @@ class User(BaseClass):
     @age.setter
     def age(self, input):
         try:
-            self.age = input
+            self._age = input
         except TypeError and ValueError:
             if type(input) is not int:
                 raise TypeError('Age must be an number')
@@ -110,7 +110,7 @@ class User(BaseClass):
     @feet.setter
     def feet(self, input):
         try:
-            self.feet = input
+            self._feet = input
         except TypeError and ValueError:
             if type(input) is not int:
                 raise TypeError('Feet must be a valid number')
@@ -126,7 +126,7 @@ class User(BaseClass):
     @inches.setter
     def inches(self, input):
         try:
-            self.inches = input
+            self._inches = input
         except TypeError and ValueError:
             if type(input) is not int:
                 raise TypeError('Inches must be a valid number')
@@ -141,7 +141,7 @@ class User(BaseClass):
     @weight.setter
     def weight(self, input):
         try:
-            self.weight = input
+            self._weight = input
         except TypeError and ValueError:
             if type(input) is not int:
                 raise TypeError('Your weight must be a number')
