@@ -1,17 +1,16 @@
-These are the requirements for the project:
-1. Flask(restx, socketio, alembic, migrate, jwt)
-2. SQLALchemy
-3. SQLite
-
-
-Python:
-1. Opencv-Python
-2. MediaPipe
-3. Numpy
-4. Pandas
-5. TensorFlow
-
-NPM:
-1. Vite
-2. React
-3. JavaScript
+Flask
+flask-restx
+flask-socketio
+flask-migrate
+flask-jwt-extended
+alembic
+SQLAlchemy
+pymongo
+bcrypt
+opencv-python
+mediapipe
+numpy
+pandas
+tensorflow
+pytest
+pytest-cov
