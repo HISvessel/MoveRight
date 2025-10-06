@@ -95,7 +95,7 @@ class User(BaseClass):
     def age(self, input):
         if type(input) is not int:
             raise TypeError('Age must be an number')
-        if self.age < 1: #pending change, observe behavior
+        if input < 1: #pending change, observe behavior
             raise ValueError('You must be of valid age.')
         self._age = input
 
@@ -109,7 +109,7 @@ class User(BaseClass):
     def feet(self, input):
         if type(input) is not int:
             raise TypeError('Feet must be a valid number')
-        if 3 <= input < 8:
+        if not 3 <= input < 8:
             raise ValueError('Please enter a valid feet measurement.')
         self._feet = input
 
@@ -123,7 +123,7 @@ class User(BaseClass):
     def inches(self, input):
         if type(input) is not int:
             raise TypeError('Inches must be a valid number')
-        if 0 <= input < 12:
+        if not 0 <= input < 12:
             raise ValueError('Please enter a valid measurement in inches.')
         self._inches = input
 
@@ -136,7 +136,7 @@ class User(BaseClass):
     def weight(self, input):
         if type(input) is not int:
             raise TypeError('Your weight must be a number')
-        if 0 > self.weight:
+        if 0 > input:
             raise ValueError('Enter your valid weight')
         self._weight = input
 
