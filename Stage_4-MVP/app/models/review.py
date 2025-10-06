@@ -18,4 +18,17 @@ the following elements make up the review composition:
 4. User_Name"""
 
 class Review(BaseClass):
-    pass
+    def __init__(self, title='', comment='', rating=0):
+        super().__init__
+        self.title = title
+        self.comment = comment
+        self.rating = rating
+    
+    def to_dict(self):
+        data = super().to_dict()
+        data.update({
+            "title": self.title,
+            "comment": self.comment,
+            'self.rating': self.rating
+        })
+        return data
