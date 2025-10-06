@@ -75,7 +75,7 @@ class User(BaseClass):
         and matches the input given by the user when class is created"""
         if not self._password:
             return False
-        return bcrypt.checkpw(password.encode('utf-8'), self._password.encode('utf-8'))
+        return bcrypt.checkpw(password.encode('utf-8'), self._password)
 
     def verify_email(self, email):
         """class method for verifying correct email pattern"""
