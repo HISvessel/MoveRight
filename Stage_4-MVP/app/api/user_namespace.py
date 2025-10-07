@@ -90,3 +90,76 @@ class UserList(Resource):
             # happens when invalid value
             error_message = str(error)
             return {'message': error_message}, 400
+
+
+@user_api.route('/<string:user_id>')
+class UserDetail(Resource):
+    """
+    Handles operations for a single user
+    GET - retrieve one user
+    PUT - update one user  
+    DELETE - delete one user
+    """
+    def get(self, user_id):
+        """
+        Get a single user by their ID
+        
+        Args:
+            user_id (string): The UUID of the user to retrieve
+            
+        Returns:
+            tuple: User data dictionary and HTTP status code
+        """
+        # TO DO: Query the database for user with this ID
+        # user = persistence.get(user_id)
+        
+        # for now returns not found error since DB not connected
+        return {'message': f'User with ID {user_id} not found'}, 404
+    
+    def put(self, user_id):
+        """
+        Update an existing user
+        
+        Args:
+            user_id (string): The UUID of the user to update
+            
+        Returns:
+            tuple: Updated user data and HTTP status code
+        """
+        data = request.json
+        
+        try:
+            # TO DO: Get user from database
+            # user = persistence.get(user_id)
+            # if not user:
+            #     return {'message': f'User {user_id} not found'}, 404
+            
+            # TO DO: Update the user with new data
+            # user.save(data)
+            # return user.to_dict(), 200
+            
+            return {'message': 'Update not yet implemented'}, 501
+            
+        except (KeyError, TypeError, ValueError) as error:
+            return {'message': str(error)}, 400
+        
+    def delete(self, user_id):
+    """
+    Delete a user by their ID
+    
+    Args:
+        user_id (string): The UUID of the user to delete
+        
+    Returns:
+        tuple: Empty response and HTTP status code
+    """
+    # TO DO: Get user from database
+    # user = persistence.get(user_id)
+    # if not user:
+    #     return {'message': f'User {user_id} not found'}, 404
+    
+    # TO DO: Delete the user
+    # persistence.delete(user_id)
+    # return '', 204
+    
+    return {'message': 'Delete not yet implemented'}, 501
