@@ -20,7 +20,7 @@ the following elements make up the review composition:
 
 class Review(BaseClass):
     def __init__(self, title='', comment='', rating=0):
-        super().__init__
+        super().__init__()
         self.title = title
         self.comment = comment
         self.rating = rating
@@ -50,7 +50,7 @@ class Review(BaseClass):
         errors = []
 
         if not self.title:
-            errors.append["Please enter the review's title."]
+            errors.append("Please enter the review's title.")
 
         if not self.comment:
             errors.append("Please comment.")
