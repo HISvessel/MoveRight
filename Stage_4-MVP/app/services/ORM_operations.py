@@ -11,15 +11,13 @@ class SQLAlchemyORM(MemoryPersistence):
     pass
 from app.services.persistence import Persistence, MemoryPersistence
 from app.models.db_model import db
-from app.models.user import User
-from app.models.review import Review
 
 
 """this script contains a class for database persistence as backed
 up by SQLAlchemy"""
 
 class SQLAlchemyORM(Persistence):
-    def __init_(self, model):
+    def __init__(self, model):
         self.model = model
     
     def add(self, obj):
@@ -27,16 +25,24 @@ class SQLAlchemyORM(Persistence):
         db.session.commit()
     
     def get(self, obj_id):
-        pass
+        return self.model.query.get(obj_id)
 
     def get_all(self):
-        pass
+        return self.model.query.all()
 
     def get_by_attribute(self, attr_name, attr_data):
-        return super().get_by_attribute(attr_name, attr_data)
-    
-    def update(self, attr_name, attr_data):
-        pass
+        return self.model.query.filter_by(**({attr_name: attr_data})).first
+
+    def update(self, obj_id, data):
+        obj = self.get(obj_id)
+        if obj:
+            for key, value in data.items():
+                if hasattr(obj, key): #changed instance, obtain attribute from key and not obj
+                    setattr(obj, key, value)
+                db.session.commit()
 
     def delete(self, obj_id):
-        pass
+        obj = self.get(obj_id)
+        if obj:
+            db.session.delete(obj)
+            db.commit()

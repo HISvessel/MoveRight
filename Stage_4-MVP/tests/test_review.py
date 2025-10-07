@@ -1,7 +1,7 @@
-from app.models.review import Review
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from app.models.review import Review
 
 title_string = 'Absolutely love this app'
 rating_comment = 'This app is great'
