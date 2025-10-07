@@ -50,7 +50,11 @@ class Review(BaseClass):
         errors = []
 
         if not self.title:
+<<<<<<< Updated upstream
             errors.append("Please enter the review's title.")
+=======
+            errors.append["Please enter the review's title."]
+>>>>>>> Stashed changes
 
         if not self.comment:
             errors.append("Please comment.")
