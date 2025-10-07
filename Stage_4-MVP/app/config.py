@@ -1,0 +1,1 @@
+"""this is the namespace for our app configuration"""

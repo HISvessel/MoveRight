@@ -27,13 +27,39 @@ class Review(BaseClass):
 
     #adding RDBMS schema
     """__table__ = 'reviews'
-    
+
     id = db.Column()
     title = db.Column()
     comment = db.Column()
     rating = db.Column()
     """
-    
+    @property
+    def rating(self):
+        return self._rating
+
+    @rating.setter
+    def rating(self, input):
+        if type(input) is not int:
+            raise TypeError('Your rating must be a number.')
+        if 0 > input > 5:
+            raise ValueError("Your rating must be between 0 and 5")
+
+        self._rating = input
+
+    def validate_information(self):
+        errors = []
+
+        if not self.title:
+            errors.append["Please enter the review's title."]
+
+        if not self.comment:
+            errors.append("Please comment.")
+
+        if not self.rating:
+            errors.append("Please rate the app.")
+
+        return errors
+
     def to_dict(self):
         data = super().to_dict()
         data.update({
