@@ -31,10 +31,14 @@ class Review(BaseClass):
     comment = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
 <<<<<<< HEAD
+<<<<<<< HEAD
     user_id = db.Column(db.String(100), db.ForeignKey('users.id'), nullable=False)
 =======
     user_id = db.Column(db.String(100), db.foreignkey('users.id'), nullable=False)
 >>>>>>> classes are now integrated with the ORM operations and the SQLAlchemy model. Database persistence is ready.
+=======
+    user_id = db.Column(db.String(100), db.ForeignKey('users.id'), nullable=False)
+>>>>>>> fixing argument keyword in the foreign key model.
 
     @property
     def rating(self):
