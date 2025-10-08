@@ -1,6 +1,7 @@
 from flask import request
-from flask_restx import Namespace, Resource, fields
+from flask_restx import Namespace, Resource, fields, marshall_with
 from app.models.user import User
+from app.services import facade
 
 # user namespace - groups all user endpoints
 user_api = Namespace('users', description='User operations')
@@ -144,15 +145,15 @@ class UserDetail(Resource):
             return {'message': str(error)}, 400
         
     def delete(self, user_id):
-    """
-    Delete a user by their ID
-    
-    Args:
-        user_id (string): The UUID of the user to delete
+        """
+        Delete a user by their ID
+
+        Args:
+            user_id (string): The UUID of the user to delete
         
-    Returns:
-        tuple: Empty response and HTTP status code
-    """
+        Returns:
+            tuple: Empty response and HTTP status code
+        """
     # TO DO: Get user from database
     # user = persistence.get(user_id)
     # if not user:
@@ -162,4 +163,4 @@ class UserDetail(Resource):
     # persistence.delete(user_id)
     # return '', 204
     
-    return {'message': 'Delete not yet implemented'}, 501
+        return {'message': 'Delete not yet implemented'}, 501
