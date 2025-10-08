@@ -49,14 +49,10 @@ class Review(BaseClass):
     def validate_information(self):
         errors = []
 
-        if not self.title:
-<<<<<<< Updated upstream
+        if not self.title or len(self.title) == 0:
             errors.append("Please enter the review's title.")
-=======
-            errors.append["Please enter the review's title."]
->>>>>>> Stashed changes
 
-        if not self.comment:
+        if not self.comment or len(self.title) == 0:
             errors.append("Please comment.")
 
         if not self.rating:
