@@ -54,10 +54,10 @@ class User(BaseClass):
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False, unique=True)
     age = db.Column(db.Integer, nullable=False)
-    feet(height) = db.Column(db.Integer, nullable=False)
-    inches(height) = db.Column(db.Integer, nullable=False)
+    feet = db.Column(db.Integer, nullable=False)
+    inches = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Float, nullable=False)
-    admin = db.Column(db.Bool, default=False)
+    admin = db.Column(db.Boolean, default=False)
 
     review = relationship('User', backref='user', lazy=True, cascade='all, delete-orphan')
 
