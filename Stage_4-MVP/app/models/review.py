@@ -30,7 +30,11 @@ class Review(BaseClass):
     title = db.Column(db.String(50), nullable=False)
     comment = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
+<<<<<<< HEAD
     user_id = db.Column(db.String(100), db.ForeignKey('users.id'), nullable=False)
+=======
+    user_id = db.Column(db.String(100), db.foreignkey('users.id'), nullable=False)
+>>>>>>> classes are now integrated with the ORM operations and the SQLAlchemy model. Database persistence is ready.
 
     @property
     def rating(self):
