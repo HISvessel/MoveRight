@@ -1,7 +1,10 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields, marshall_with
 from app.models.user import User
-from app.services import facade
+from app.services.facade import Facade
+
+# creates instance
+facade = Facade()
 
 # user namespace - groups all user endpoints
 user_api = Namespace('users', description='User operations')
@@ -46,8 +49,8 @@ class UserList(Resource):
             A list of all users and status code 200 (OK)
         """
         
-        # TO DO: get user data from DB
-        list_of_users = []
+        users = facade.get_all_users()
+        list_of_users = [user.to_dict() for user in users]
         
         return list_of_users, 200
     
@@ -72,6 +75,9 @@ class UserList(Resource):
                 inches=data['inches'],
                 weight=data['weight']
             )
+            
+            # save user to db
+            facade.user_service.add(new_user)
             
             # convert user obj to dictionary
             user_data = new_user.to_dict()
@@ -111,11 +117,10 @@ class UserDetail(Resource):
         Returns:
             tuple: User data dictionary and HTTP status code
         """
-        # TO DO: Query the database for user with this ID
-        # user = persistence.get(user_id)
-        
-        # for now returns not found error since DB not connected
-        return {'message': f'User with ID {user_id} not found'}, 404
+        user = facade.user_service.get(user_id)
+        if not user:
+            return {'message': f'User with ID {user_id} not found'}, 404
+        return user.to_dict(), 200
     
     def put(self, user_id):
         """
@@ -130,16 +135,12 @@ class UserDetail(Resource):
         data = request.json
         
         try:
-            # TO DO: Get user from database
-            # user = persistence.get(user_id)
-            # if not user:
-            #     return {'message': f'User {user_id} not found'}, 404
+            user = facade.user_service.get(user_id)
+            if not user:
+                return {'message': f'User with ID {user_id} not found'}, 404
             
-            # TO DO: Update the user with new data
-            # user.save(data)
-            # return user.to_dict(), 200
-            
-            return {'message': 'Update not yet implemented'}, 501
+            facade.user_service.update(user_id, data)
+            return {'message': 'User updated successfully'}, 200
             
         except (KeyError, TypeError, ValueError) as error:
             return {'message': str(error)}, 400
@@ -154,13 +155,9 @@ class UserDetail(Resource):
         Returns:
             tuple: Empty response and HTTP status code
         """
-        # TO DO: Get user from database
-        # user = persistence.get(user_id)
-        # if not user:
-        #     return {'message': f'User {user_id} not found'}, 404
+        user = facade.user_service.get(user_id)
+        if not user:
+            return {'message': f'User with ID {user_id} not found'}, 404
         
-        # TO DO: Delete the user
-        # persistence.delete(user_id)
-        # return '', 204
-    
-        return {'message': 'Delete not yet implemented'}, 501
+        facade.user_service.delete(user_id)
+        return '', 204

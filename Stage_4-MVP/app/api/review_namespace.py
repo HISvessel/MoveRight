@@ -1,8 +1,12 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.models.review import Review
-from app.services import facade
+from app.services.facade import Facade
 
+# creates instance
+facade = Facade() 
+
+# review namespace - groups all review endpoints
 review_api = Namespace('reviews', description='Review operations')
 
 review_input = review_api.model('ReviewInput', {
@@ -29,7 +33,8 @@ class ReviewList(Resource):
     """
     def get(self):
         """Returns a list of all reviews"""
-        list_of_reviews = []
+        reviews = facade.get_all_reviews()
+        list_of_reviews = [review.to_dict() for review in reviews]
         return list_of_reviews, 200
     
     def post(self):
@@ -44,6 +49,9 @@ class ReviewList(Resource):
                 comment=data['comment'],
                 rating=data['rating']
             )
+            
+            # save review to db
+            facade.review_service.add(new_review)
             
             return new_review.to_dict(), 201
         
@@ -64,16 +72,27 @@ class ReviewDetail(Resource):
     """
     def get(self, review_id):
         """Get a review by ID"""
-        # TO DO: Get review from database
-        return {'message': f'Review with ID {review_id} not found'}, 404
+        review = facade.review_service.get(review_id)
+        if not review:
+            return {'message': f'Review with ID {review_id} not found'}, 404
+        return review.to_dict(), 200
     
     def put(self, review_id):
         """Update an existing review"""
         data = request.json
-        # TO DO: Get review from database and update it
-        return {'message': 'Update not yet implemented'}, 501
+        
+        review = facade.review_service.get(review_id)
+        if not review:
+            return {'message': f'Review with ID {review_id} not found'}, 404
+        
+        facade.review_service.update(review_id, data)
+        return {'message': 'Review updated successfully'}, 200
     
     def delete(self, review_id):
         """Delete a review by ID"""
-        # TO DO: Get review from database and delete it
-        return {'message': 'Delete not yet implemented'}, 501
+        review = facade.review_service.get(review_id)
+        if not review:
+            return {'message': f'Review with ID {review_id} not found'}, 404
+        
+        facade.review_service.delete(review_id)
+        return '', 204
