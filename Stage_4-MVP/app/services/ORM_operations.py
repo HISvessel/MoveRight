@@ -34,4 +34,4 @@ class SQLAlchemyORM(Persistence):
         obj = self.get(obj_id)
         if obj:
             db.session.delete(obj)
-            db.commit()
+            db.session.commit()
