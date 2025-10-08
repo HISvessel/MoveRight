@@ -10,7 +10,8 @@ def create_app():
     api = Api(app)
 
     #setting up the app configurations
-    """app.config[] ='None'"""
+    app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///move_right.db' 
+    app.config('TESTING') = True
 
     #adding namespaces from the Flask_RESTx api
     api.add_namespace(user_api, path='/users')
