@@ -32,6 +32,7 @@ class Review(BaseClass):
     rating = db.Column(db.Integer, nullable=False)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     user_id = db.Column(db.String(100), db.ForeignKey('users.id'), nullable=False)
 =======
     user_id = db.Column(db.String(100), db.foreignkey('users.id'), nullable=False)
@@ -39,6 +40,9 @@ class Review(BaseClass):
 =======
     user_id = db.Column(db.String(100), db.ForeignKey('users.id'), nullable=False)
 >>>>>>> fixing argument keyword in the foreign key model.
+=======
+    user_id = db.Column(db.String(100), db.ForeignKey('users.id'), nullable=False)
+>>>>>>> main
 
     @property
     def rating(self):
