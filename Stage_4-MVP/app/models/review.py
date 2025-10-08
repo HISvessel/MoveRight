@@ -1,6 +1,5 @@
 from app.models.base_class import BaseClass
 from app.models.db_model import db
-from flask_sqlalchemy.orm import relationship
 
 """the following script contains a review class.
 
@@ -19,20 +18,20 @@ the following elements make up the review composition:
 4. User_Name"""
 
 class Review(BaseClass):
-    def __init__(self, title='', comment='', rating=0):
+    def __init__(self, title='', comment='', rating=0, user_id=''):
         super().__init__()
         self.title = title
         self.comment = comment
         self.rating = rating
+        self.user_id = user_id
 
     #adding RDBMS schema
-    """__table__ = 'reviews'
+    __tablename__ = 'reviews'
+    title = db.Column(db.String(50), nullable=False)
+    comment = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.String(100), db.foreignkey('users.id'), nullable=False)
 
-    id = db.Column()
-    title = db.Column()
-    comment = db.Column()
-    rating = db.Column()
-    """
     @property
     def rating(self):
         return self._rating
@@ -65,6 +64,7 @@ class Review(BaseClass):
         data.update({
             "title": self.title,
             "comment": self.comment,
-            'self.rating': self.rating
+            'self.rating': self.rating,
+            'user_id': self.user_id
         })
         return data

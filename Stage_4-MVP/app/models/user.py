@@ -48,16 +48,18 @@ class User(BaseClass):
         self._admin = False
     
     #preparing ORM structure for RDBMS schema
-    """__table__ = 'users'
-    first_name = db.Column()
-    last_name = db.Column()
-    age = db.Column()
-    feet(height) = db.Column()
-    inches(height) = db.Column()
-    weight = db.Column()
+    __tablename__ = 'users'
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(100), nullable=False, unique=True)
+    password = db.Column(db.String(100), nullable=False, unique=True)
+    age = db.Column(db.Integer, nullable=False)
+    feet(height) = db.Column(db.Integer, nullable=False)
+    inches(height) = db.Column(db.Integer, nullable=False)
+    weight = db.Column(db.Float, nullable=False)
+    admin = db.Column(db.Bool, default=False)
 
-    review = relationship()
-    """
+    review = relationship('User', backref='user', lazy=True, cascade='all, delete-orphan')
 
     #preparing non relational object mapping for video storage using pymongo
     """Mongo DB document based ORM under construction"""
