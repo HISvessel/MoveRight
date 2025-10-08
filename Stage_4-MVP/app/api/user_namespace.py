@@ -1,5 +1,5 @@
 from flask import request
-from flask_restx import Namespace, Resource, fields, marshall_with
+from flask_restx import Namespace, Resource, fields
 from app.models.user import User
 from app.services.facade import Facade
 
