@@ -12,12 +12,12 @@ Objects it will have:
 2. Updating timestamp
 3. object id with UUID"""
 
-class BaseClass():#db.Model):
+class BaseClass(db.Model):
     __abstract__ = True
-    """
-    id = db.Column()
-    created_at = db.Column()
-    updated_at = db.Column()"""
+    id = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
     def __init__(self):
         """temporary constructor method for the base class."""
 
