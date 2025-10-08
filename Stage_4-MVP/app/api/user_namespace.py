@@ -154,13 +154,13 @@ class UserDetail(Resource):
         Returns:
             tuple: Empty response and HTTP status code
         """
-    # TO DO: Get user from database
-    # user = persistence.get(user_id)
-    # if not user:
-    #     return {'message': f'User {user_id} not found'}, 404
-    
-    # TO DO: Delete the user
-    # persistence.delete(user_id)
-    # return '', 204
+        # TO DO: Get user from database
+        # user = persistence.get(user_id)
+        # if not user:
+        #     return {'message': f'User {user_id} not found'}, 404
+        
+        # TO DO: Delete the user
+        # persistence.delete(user_id)
+        # return '', 204
     
         return {'message': 'Delete not yet implemented'}, 501
