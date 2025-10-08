@@ -30,7 +30,7 @@ class Review(BaseClass):
     title = db.Column(db.String(50), nullable=False)
     comment = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.String(100), db.foreignkey('users.id'), nullable=False)
+    user_id = db.Column(db.String(100), db.ForeignKey('users.id'), nullable=False)
 
     @property
     def rating(self):
