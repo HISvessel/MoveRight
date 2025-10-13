@@ -10,6 +10,7 @@ import cv2 as cv
 import threading
 import time
 from datetime import datetime
+from app.models.video_source import VideoSource
 
 
 class Camera:

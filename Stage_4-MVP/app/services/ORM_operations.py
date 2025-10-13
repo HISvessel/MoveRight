@@ -20,7 +20,7 @@ class SQLAlchemyORM(Persistence):
         return self.model.query.all()
 
     def get_by_attribute(self, attr_name, attr_data):
-        return self.model.query.filter_by(**({attr_name: attr_data})).first
+        return self.model.query.filter_by(**({attr_name: attr_data})).first()
 
     def update(self, obj_id, data):
         obj = self.get(obj_id)
