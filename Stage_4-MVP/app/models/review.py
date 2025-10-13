@@ -33,22 +33,22 @@ class Review(BaseClass):
         self.rating = rating
         self.user_id = user_id
 
-    @property
-    def rating(self):
-        return self._rating
+    # @property
+    # def rating(self):
+    #     return self._rating
 
-    @rating.setter
-    def rating(self, input):
-        if type(input) is not int:
-            raise TypeError('Your rating must be a number.')
+    # @rating.setter
+    # def rating(self, input):
+    #     if type(input) is not int:
+    #         raise TypeError('Your rating must be a number.')
         
-        # FIX #2: Fixed impossible validation condition
-        # Original: "if 0 > input > 5" - This can NEVER be true (can't be <0 AND >5 simultaneously)
-        # Corrected: Check if outside valid range [0, 5]
-        if input < 0 or input > 5:
-            raise ValueError("Your rating must be between 0 and 5")
+    #     # FIX #2: Fixed impossible validation condition
+    #     # Original: "if 0 > input > 5" - This can NEVER be true (can't be <0 AND >5 simultaneously)
+    #     # Corrected: Check if outside valid range [0, 5]
+    #     if input < 0 or input > 5:
+    #         raise ValueError("Your rating must be between 0 and 5")
 
-        self._rating = input
+    #     self._rating = input
 
     def validate_information(self):
         errors = []

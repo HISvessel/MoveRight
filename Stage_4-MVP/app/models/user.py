@@ -92,59 +92,60 @@ class User(BaseClass):
         return re.match(pattern, email) is not None
 
 
-    #setting the age property for a value greater than 0
-    @property
-    def age(self):
-        return self._age
+    # #setting the age property for a value greater than 0
+    # @property
+    # def age(self):
+    #     # Read from column if private var doesn't exist
+    #     return getattr(self, '_age', self.__dict__.get('age'))
 
-    @age.setter
-    def age(self, input):
-        if type(input) is not int:
-            raise TypeError('Age must be an number')
-        if input < 1:
-            raise ValueError('You must be of valid age.')
-        self._age = input
-
-
-    #setting the feet for a value between 3 and 7 feet
-    @property
-    def feet(self):
-        return self._feet
-
-    @feet.setter
-    def feet(self, input):
-        if type(input) is not int:
-            raise TypeError('Feet must be a valid number')
-        if not 3 <= input < 8:
-            raise ValueError('Please enter a valid feet measurement.')
-        self._feet = input
+    # @age.setter
+    # def age(self, input):
+    #     if type(input) is not int:
+    #         raise TypeError('Age must be an number')
+    #     if input < 1:
+    #         raise ValueError('You must be of valid age.')
+    #     self._age = input
 
 
-    #setting the inches to a value between 0 and 11
-    @property
-    def inches(self):
-        return self._inches
+    # #setting the feet for a value between 3 and 7 feet
+    # @property
+    # def feet(self):
+    #     return getattr(self, '_feet', self.__dict__.get('feet'))
 
-    @inches.setter
-    def inches(self, input):
-        if type(input) is not int:
-            raise TypeError('Inches must be a valid number')
-        if not 0 <= input < 12:
-            raise ValueError('Please enter a valid measurement in inches.')
-        self._inches = input
+    # @feet.setter
+    # def feet(self, input):
+    #     if type(input) is not int:
+    #         raise TypeError('Feet must be a valid number')
+    #     if not 3 <= input < 8:
+    #         raise ValueError('Please enter a valid feet measurement.')
+    #     self._feet = input
 
-    #setting the weight to be greater than 0(no judgement if they weight 1 single lbs)
-    @property
-    def weight(self):
-        return self._weight
 
-    @weight.setter
-    def weight(self, input):
-        if type(input) is not int:
-            raise TypeError('Your weight must be a number')
-        if 0 > input:
-            raise ValueError('Enter your valid weight')
-        self._weight = input
+    # #setting the inches to a value between 0 and 11
+    # @property
+    # def inches(self):
+    #     return getattr(self, '_inches', self.__dict__.get('inches'))
+
+    # @inches.setter
+    # def inches(self, input):
+    #     if type(input) is not int:
+    #         raise TypeError('Inches must be a valid number')
+    #     if not 0 <= input < 12:
+    #         raise ValueError('Please enter a valid measurement in inches.')
+    #     self._inches = input
+
+    # #setting the weight to be greater than 0(no judgement if they weight 1 single lbs)
+    # @property
+    # def weight(self):
+    #     return getattr(self, '_weight', self.__dict__.get('weight'))
+
+    # @weight.setter
+    # def weight(self, input):
+    #     if type(input) is not int:
+    #         raise TypeError('Your weight must be a number')
+    #     if 0 > input:
+    #         raise ValueError('Enter your valid weight')
+    #     self._weight = input
 
     #set admin to True
     #private method that no one sees
@@ -200,6 +201,6 @@ class User(BaseClass):
             'age': self.age,
             'height': f"{self.feet}'{self.inches}\"",
             'weight': self.weight,
-            'video_collection': self.video_collection,
+            'video_collection': getattr(self, 'video_collection', []),
         })
         return data
