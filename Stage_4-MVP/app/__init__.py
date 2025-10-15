@@ -1,23 +1,83 @@
+# app/__init__.py
+"""
+Application Factory for Move Right
+
+This module creates and configures the Flask application.
+"""
+
 from flask import Flask
-from app.api.user_namespace import user_api
-from app.api.review_namespace import review_api
-from flask_restx import Api
+from config import Config
 from app.models.db_model import db
-"""adding files for structure. This is where the create app function will be placed."""
+from flask_restx import Api
+from flask_jwt_extended import JWTManager
+from flask_socketio import SocketIO 
+
+# Create SocketIO instance
+socketio = SocketIO(cors_allowed_origins="*")  # Allows browser from ANY origin to connect
 
 def create_app():
+    """
+    Application factory function.
+    
+    Creates and configures a Flask application instance.
+    
+    Returns:
+        Flask: Configured Flask application
+    """
+    
+    # Step 1: Create Flask application instance
     app = Flask(__name__)
-    api = Api(app)
+    
+    # Step 2: Load configuration
+    app.config.from_object(Config)
+    
+    # Step 3: Initialize database
+    db.init_app(app)
+    
+    # Step 4: Initialize JWT Manager
+    jwt = JWTManager(app)
+    
+    # Step 5: Initialize SocketIO
+    socketio.init_app(app)
+    
+    # Import models BEFORE creating tables
+    from app.models.user import User
+    from app.models.review import Review
+    
+    # Step 6: Create tables (if they don't exist)
+    with app.app_context():
+        db.create_all()
+    
+    # Swagger JWT Auth config (for testing in Swagger UI)
+    authorizations = {
+        'BearerAuth': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': 'Add: **Bearer &lt;your_JWT_token&gt;**'
+        }
+    }
 
-    #setting up the app configurations
-    app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///move_right.db' 
-    app.config['TESTING'] = True
+    # Create API instance with JWT support in Swagger
+    api = Api(
+        app,
+        title='Move Right API',
+        version='1.0',
+        description='Fitness form correction API',
+        authorizations=authorizations,
+        security='BearerAuth'
+    )
 
-    #adding namespaces from the Flask_RESTx api
+    # Register namespaces
+    from app.api.user_namespace import user_api
+    from app.api.review_namespace import review_api
+    from app.api.auth_namespace import auth_api
+    from app.api.camera_namespace import camera_api
+    
     api.add_namespace(user_api, path='/users')
     api.add_namespace(review_api, path='/reviews')
+    api.add_namespace(auth_api, path='/auth')
+    api.add_namespace(camera_api, path='/camera')
     
-    #initializing the necessary concepts for the app function
-    db.init_app(app)
-
+    # Return configured app
     return app
