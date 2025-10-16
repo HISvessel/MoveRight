@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { userAPI } from '../services/api';
+import { userAPI, authAPI } from '../services/api';
 
 
 function SignUp({ onNavigate, onSignUpSuccess }) {
@@ -115,8 +115,8 @@ function SignUp({ onNavigate, onSignUpSuccess }) {
     setIsLoading(true);
     
     try {
-      // Call Flask backend via userAPI
-      const data = await userAPI.create({
+      // Create user account
+      await userAPI.create({
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
@@ -127,18 +127,21 @@ function SignUp({ onNavigate, onSignUpSuccess }) {
         weight: parseFloat(formData.weight)
       });
 
-      // Save JWT token for future authenticated requests
-      localStorage.setItem('token', data.token);
-
-      // Notify parent (auto-login behavior)
-      onSignUpSuccess(data.user);
+      // Auto-login with same credentials
+      const loginData = await authAPI.login(formData.email, formData.password);
+      
+      //  Save token
+      localStorage.setItem('token', loginData.token);
+      
+      //  Notify parent
+      onSignUpSuccess(loginData.user);
 
     } catch (error) {
       setErrors({ general: error.message || 'Sign up failed. Please try again.' });
     } finally {
       setIsLoading(false);
-    }
-  };
+  }
+};
 
   return (
     <div>

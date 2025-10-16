@@ -15,28 +15,23 @@ function App() {
   const [exerciseResults, setExerciseResults] = useState(null);
 
   const handleSignUpSuccess = (userData) => {
-    const newUser = {
+    setUser({
       ...userData,
-      firstName: userData.name || userData.email.split('@')[0],
-      lastName: '',
-      memberSince: new Date().toISOString()
-    };
-    setUser(newUser);
+      memberSince: userData.created_at || new Date().toISOString()
+    });
     setCurrentPage('dashboard');
   };
 
   const handleLoginSuccess = (userData) => {
-    const newUser = {
+    setUser({
       ...userData,
-      firstName: userData.name || userData.email.split('@')[0],
-      lastName: '',
-      memberSince: new Date().toISOString()
-    };
-    setUser(newUser);
+      memberSince: userData.created_at || new Date().toISOString()
+    });
     setCurrentPage('dashboard');
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
     setUser(null);
     setCurrentPage('landing');
   };

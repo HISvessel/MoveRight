@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { userAPI } from '../services/api';
 
 function Account({ user, onNavigate, onUpdateUser, onLogout }) {
+  console.log('User object:', user);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: user.firstName || '',
-    lastName: user.lastName || '',
+    firstName: user.first_name || '',
+    lastName: user.last_name || '',
     email: user.email || '',
     currentPassword: '',
     newPassword: '',
     confirmNewPassword: '',
     age: user.age || '',
-    feet: user.feet || '',
-    inches: user.inches || '',
+    feet: user.height ? parseInt(user.height.split("'")[0]) : '',
+    inches: user.height ? parseInt(user.height.split("'")[1]) : '',
     weight: user.weight || ''
   });
   const [errors, setErrors] = useState({});
@@ -107,7 +108,11 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
         last_name: formData.lastName,
         email: formData.email,
         current_password: formData.currentPassword,
-        new_password: formData.newPassword
+        new_password: formData.newPassword,
+        age: formData.age,
+        feet: formData.feet,
+        inches: formData.inches,
+        weight: formData.weight
       });
 
       onUpdateUser(updatedUser);
@@ -145,7 +150,7 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
 
   };
 
-  const memberSinceDate = new Date(user.memberSince).toLocaleDateString('en-US', {
+  const memberSinceDate = new Date(user.created_at).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -173,7 +178,7 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
           {!isEditing ? (
             <div>
               <div>
-                <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+                <p><strong>Name:</strong> {user.first_name} {user.last_name}</p>
               </div>
               <div>
                 <p><strong>Email:</strong> {user.email}</p>

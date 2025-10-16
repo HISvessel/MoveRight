@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { reviewAPI } from '../services/api';
 
 function ReviewForm({ user, onNavigate }) {
   const [formData, setFormData] = useState({
@@ -61,26 +62,19 @@ function ReviewForm({ user, onNavigate }) {
     
     // TODO: Replace with actual API call to backend
     try {
-      // const response = await fetch('YOUR_BACKEND_API/reviews', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     userId: user.id,
-      //     rating: formData.rating,
-      //     title: formData.title,
-      //     comment: formData.comment,
-      //     date: new Date().toISOString()
-      //   })
-      // });
-      // const data = await response.json();
+      // Call Flask backend to create review
+      await reviewAPI.create({
+        title: formData.title,
+        comment: formData.comment,
+        rating: formData.rating
+      });
       
-      setTimeout(() => {
-        setSubmitted(true);
-        setIsLoading(false);
-      }, 1000);
+      // Note: user_id is automatically added by Flask from JWT token
+      setSubmitted(true);
       
     } catch (error) {
-      setErrors({ general: 'Failed to submit review. Please try again.' });
+      setErrors({ general: error.message || 'Failed to submit review. Please try again.' });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -166,7 +160,7 @@ function ReviewForm({ user, onNavigate }) {
           </div>
 
           <div>
-            <p>Posting as: {user.firstName} {user.lastName}</p>
+            <p>Posting as: {user.first_name} {user.last_name}</p>
           </div>
 
           <button type="submit" disabled={isLoading}>
