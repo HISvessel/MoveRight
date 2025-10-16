@@ -63,7 +63,7 @@ class Facade():
         if not user:
             return None
         user.update(value)
-        return user        
+        return user
 
     #this is the operation to get user by email
     def get_user_by_email(self, email):
@@ -98,17 +98,17 @@ class Facade():
     """below this line, all CRUD operation for the review entity are written"""
 
     #this is the operation to create a review
-    def create_review(self, data):
+    def create_review(self, review_data):
         """POST operation for the creation of a single, non-existing
         review. It takes the review data as a singular argument.
 
         Stores the newly created review into the database and 
         returns the new review as an object for a JSON response."""
 
-        existing_review = self.review_service.get()
+        existing_review = self.review_service.get(review_data.get('review_id'))#I believe my error was here
         if existing_review:
             raise ValueError("Review already exists in the database.")
-        new_review = Review(**data)
+        new_review = Review(**review_data)
         errors = new_review.validate_information()
         if errors:
             return {400, errors}
