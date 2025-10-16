@@ -9,7 +9,11 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
     email: user.email || '',
     currentPassword: '',
     newPassword: '',
-    confirmNewPassword: ''
+    confirmNewPassword: '',
+    age: user.age || '',
+    feet: user.feet || '',
+    inches: user.inches || '',
+    weight: user.weight || ''
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -32,22 +36,33 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   const validateProfileForm = () => {
     const newErrors = {};
 
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    }
+    // Name & email
+    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
 
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
-    }
+    // Age
+    const age = parseInt(formData.age);
+    if (!formData.age) newErrors.age = 'Age is required';
+    else if (isNaN(age) || age <= 0) newErrors.age = 'Age must be a positive number';
 
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
+    // Height
+    const feet = parseInt(formData.feet);
+    const inches = parseInt(formData.inches);
+    if (!formData.feet) newErrors.feet = 'Height (feet) is required';
+    else if (isNaN(feet) || feet < 3 || feet > 7) newErrors.feet = 'Height (feet) must be 3–7';
+    if (!formData.inches && formData.inches !== 0) newErrors.inches = 'Height (inches) is required';
+    else if (isNaN(inches) || inches < 0 || inches > 11) newErrors.inches = 'Height (inches) must be 0–11';
+
+    // Weight
+    const weight = parseFloat(formData.weight);
+    if (!formData.weight) newErrors.weight = 'Weight is required';
+    else if (isNaN(weight) || weight <= 0) newErrors.weight = 'Weight must be positive';
 
     return newErrors;
   };
+
 
   const validatePasswordForm = () => {
     const newErrors = {};
@@ -209,6 +224,58 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   disabled={isLoading}
                 />
                 {errors.email && <span>{errors.email}</span>}
+              </div>
+              
+              <div>
+                <label htmlFor="age">Age</label>
+                <input
+                  type="number"
+                  id="age"
+                  name="age"
+                  value={formData.age || ''}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                {errors.age && <span>{errors.age}</span>}
+              </div>
+
+              <div>
+                <label htmlFor="feet">Height (Feet)</label>
+                <input
+                  type="number"
+                  id="feet"
+                  name="feet"
+                  value={formData.feet || ''}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                {errors.feet && <span>{errors.feet}</span>}
+              </div>
+
+              <div>
+                <label htmlFor="inches">Height (Inches)</label>
+                <input
+                  type="number"
+                  id="inches"
+                  name="inches"
+                  value={formData.inches || ''}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                {errors.inches && <span>{errors.inches}</span>}
+              </div>
+
+              <div>
+                <label htmlFor="weight">Weight</label>
+                <input
+                  type="number"
+                  id="weight"
+                  name="weight"
+                  value={formData.weight || ''}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                {errors.weight && <span>{errors.weight}</span>}
               </div>
 
               <h3>Change Password (Optional)</h3>
