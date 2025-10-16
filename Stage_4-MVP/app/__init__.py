@@ -6,6 +6,7 @@ This module creates and configures the Flask application.
 """
 
 from flask import Flask
+from flask_cors import CORS
 from config import Config
 from app.models.db_model import db
 from flask_restx import Api
@@ -30,6 +31,15 @@ def create_app():
     
     # Step 2: Load configuration
     app.config.from_object(Config)
+    
+    # CORS Configuration
+    CORS(app, resources={
+        r"/*": {
+            "origins": ["http://localhost:3000", "http://localhost:5173"],
+            "methods": ["GET", "POST", "PUT", "DELETE"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
     
     # Step 3: Initialize database
     db.init_app(app)

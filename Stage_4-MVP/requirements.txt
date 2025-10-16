@@ -4,6 +4,7 @@ Flask-SQLAlchemy
 flask-socketio
 flask-migrate
 flask-jwt-extended
+flask-cors
 alembic
 SQLAlchemy
 pymongo
@@ -13,11 +14,6 @@ mediapipe 0.10.21
 numpy 1.26.4
 pandas
 tensorflow
-<<<<<<< HEAD
-Pytest
-Pytest-cov
-=======
 pytest
 pytest-cov
 python-socketio
->>>>>>> main
