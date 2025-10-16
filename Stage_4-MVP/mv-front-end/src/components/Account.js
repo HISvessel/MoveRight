@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
+import { userAPI } from '../services/api';
 
 function Account({ user, onNavigate, onUpdateUser, onLogout }) {
+  console.log('User object:', user);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: user.firstName || '',
-    lastName: user.lastName || '',
+    firstName: user.first_name || '',
+    lastName: user.last_name || '',
     email: user.email || '',
     currentPassword: '',
     newPassword: '',
-    confirmNewPassword: ''
+    confirmNewPassword: '',
+    age: user.age || '',
+    feet: user.height ? parseInt(user.height.split("'")[0]) : '',
+    inches: user.height ? parseInt(user.height.split("'")[1]) : '',
+    weight: user.weight || ''
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -31,22 +37,33 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   const validateProfileForm = () => {
     const newErrors = {};
 
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    }
+    // Name & email
+    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
 
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
-    }
+    // Age
+    const age = parseInt(formData.age);
+    if (!formData.age) newErrors.age = 'Age is required';
+    else if (isNaN(age) || age <= 0) newErrors.age = 'Age must be a positive number';
 
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
+    // Height
+    const feet = parseInt(formData.feet);
+    const inches = parseInt(formData.inches);
+    if (!formData.feet) newErrors.feet = 'Height (feet) is required';
+    else if (isNaN(feet) || feet < 3 || feet > 7) newErrors.feet = 'Height (feet) must be 3–7';
+    if (!formData.inches && formData.inches !== 0) newErrors.inches = 'Height (inches) is required';
+    else if (isNaN(inches) || inches < 0 || inches > 11) newErrors.inches = 'Height (inches) must be 0–11';
+
+    // Weight
+    const weight = parseFloat(formData.weight);
+    if (!formData.weight) newErrors.weight = 'Weight is required';
+    else if (isNaN(weight) || weight <= 0) newErrors.weight = 'Weight must be positive';
 
     return newErrors;
   };
+
 
   const validatePasswordForm = () => {
     const newErrors = {};
@@ -85,40 +102,30 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
     setIsLoading(true);
     setSuccessMessage('');
     
-    // TODO: Replace with actual API call to backend
     try {
-      // const response = await fetch('YOUR_BACKEND_API/user/profile', {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     firstName: formData.firstName,
-      //     lastName: formData.lastName,
-      //     email: formData.email,
-      //     currentPassword: formData.currentPassword,
-      //     newPassword: formData.newPassword
-      //   })
-      // });
-      // const data = await response.json();
+      const updatedUser = await userAPI.update(user.id, {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        current_password: formData.currentPassword,
+        new_password: formData.newPassword,
+        age: formData.age,
+        feet: formData.feet,
+        inches: formData.inches,
+        weight: formData.weight
+      });
+
+      onUpdateUser(updatedUser);
+      setIsEditing(false);
+      setSuccessMessage('Profile updated successfully!');
+      setFormData(prev => ({
+        ...prev,
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: ''
+      }));
+      setIsLoading(false);
       
-      setTimeout(() => {
-        const updatedUser = {
-          ...user,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          name: `${formData.firstName} ${formData.lastName}`
-        };
-        onUpdateUser(updatedUser);
-        setIsEditing(false);
-        setSuccessMessage('Profile updated successfully!');
-        setFormData(prev => ({
-          ...prev,
-          currentPassword: '',
-          newPassword: '',
-          confirmNewPassword: ''
-        }));
-        setIsLoading(false);
-      }, 1000);
       
     } catch (error) {
       setErrors({ general: 'Update failed. Please try again.' });
@@ -133,22 +140,17 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
     
     if (!confirmed) return;
 
-    // TODO: Replace with actual API call to backend
     try {
-      // const response = await fetch('YOUR_BACKEND_API/user/account', {
-      //   method: 'DELETE',
-      //   headers: { 'Content-Type': 'application/json' }
-      // });
-      
+      await userAPI.delete(user.id);
       alert('Account deleted successfully');
       onLogout();
-      
     } catch (error) {
       alert('Failed to delete account. Please try again.');
     }
+
   };
 
-  const memberSinceDate = new Date(user.memberSince).toLocaleDateString('en-US', {
+  const memberSinceDate = new Date(user.created_at).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -176,7 +178,7 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
           {!isEditing ? (
             <div>
               <div>
-                <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+                <p><strong>Name:</strong> {user.first_name} {user.last_name}</p>
               </div>
               <div>
                 <p><strong>Email:</strong> {user.email}</p>
@@ -227,6 +229,58 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   disabled={isLoading}
                 />
                 {errors.email && <span>{errors.email}</span>}
+              </div>
+              
+              <div>
+                <label htmlFor="age">Age</label>
+                <input
+                  type="number"
+                  id="age"
+                  name="age"
+                  value={formData.age || ''}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                {errors.age && <span>{errors.age}</span>}
+              </div>
+
+              <div>
+                <label htmlFor="feet">Height (Feet)</label>
+                <input
+                  type="number"
+                  id="feet"
+                  name="feet"
+                  value={formData.feet || ''}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                {errors.feet && <span>{errors.feet}</span>}
+              </div>
+
+              <div>
+                <label htmlFor="inches">Height (Inches)</label>
+                <input
+                  type="number"
+                  id="inches"
+                  name="inches"
+                  value={formData.inches || ''}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                {errors.inches && <span>{errors.inches}</span>}
+              </div>
+
+              <div>
+                <label htmlFor="weight">Weight</label>
+                <input
+                  type="number"
+                  id="weight"
+                  name="weight"
+                  value={formData.weight || ''}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                />
+                {errors.weight && <span>{errors.weight}</span>}
               </div>
 
               <h3>Change Password (Optional)</h3>

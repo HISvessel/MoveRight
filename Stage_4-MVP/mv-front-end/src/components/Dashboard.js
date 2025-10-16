@@ -49,7 +49,7 @@ function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
 
       <main>
         <section>
-          <h2>Welcome back, {user.firstName || user.name}!</h2>
+          <h2>Welcome back, {user.first_name || user.name}!</h2>
           <p>Ready to crush your workout?</p>
         </section>
 

@@ -140,7 +140,9 @@ class UserDetail(Resource):
                 return {'message': f'User with ID {user_id} not found'}, 404
             
             facade.user_service.update(user_id, data)
-            return {'message': 'User updated successfully'}, 200
+            # Get the updated user from database
+            updated_user = facade.user_service.get(user_id)
+            return updated_user.to_dict(), 200  # ← Return user object!
             
         except (KeyError, TypeError, ValueError) as error:
             return {'message': str(error)}, 400

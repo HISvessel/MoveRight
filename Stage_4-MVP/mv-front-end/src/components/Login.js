@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { authAPI } from '../services/api';
 
 function Login({ onNavigate, onLoginSuccess }) {
   const [formData, setFormData] = useState({
@@ -50,31 +51,22 @@ function Login({ onNavigate, onLoginSuccess }) {
 
     setIsLoading(true);
     
-    // TODO: Replace with actual API call to backend
+    // API call
     try {
-      // Simulated API call
-      // const response = await fetch('YOUR_BACKEND_API/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     email: formData.email,
-      //     password: formData.password
-      //   })
-      // });
-      // const data = await response.json();
+      // Call Flask backend
+      const data = await authAPI.login(formData.email, formData.password);
       
-      // Simulated success
-      setTimeout(() => {
-        const userData = {
-          email: formData.email,
-          name: formData.email.split('@')[0]
-        };
-        onLoginSuccess(userData);
-        setIsLoading(false);
-      }, 1000);
+      // Save JWT token to localStorage
+      localStorage.setItem('token', data.token);
+      
+      // Pass user data to parent component
+      onLoginSuccess(data.user);
       
     } catch (error) {
-      setErrors({ general: 'Login failed. Please check your credentials.' });
+      // Handle login error
+      setErrors({ general: error.message || 'Login failed. Please check your credentials.' });
+    } finally {
+      // Always stop loading, whether success or error
       setIsLoading(false);
     }
   };

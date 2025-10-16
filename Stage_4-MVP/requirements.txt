@@ -4,6 +4,7 @@ Flask-SQLAlchemy
 flask-socketio
 flask-migrate
 flask-jwt-extended
+flask-cors
 alembic
 SQLAlchemy
 pymongo

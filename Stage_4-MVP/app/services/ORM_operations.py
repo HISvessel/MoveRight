@@ -28,7 +28,7 @@ class SQLAlchemyORM(Persistence):
             for key, value in data.items():
                 if hasattr(obj, key): #changed instance, obtain attribute from key and not obj
                     setattr(obj, key, value)
-                db.session.commit()
+            db.session.commit()
 
     def delete(self, obj_id):
         obj = self.get(obj_id)
