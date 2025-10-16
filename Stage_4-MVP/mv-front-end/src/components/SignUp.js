@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { userAPI } from '../services/api';
+
 
 function SignUp({ onNavigate, onSignUpSuccess }) {
   const [formData, setFormData] = useState({
@@ -58,34 +60,24 @@ function SignUp({ onNavigate, onSignUpSuccess }) {
       return;
     }
 
-      setIsLoading(true);
-   setIsLoading(true);
+    setIsLoading(true);
     
-    // TODO: Replace with actual API call to backend
     try {
-      // Simulated API call
-      // const response = await fetch('YOUR_BACKEND_API/signup', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     email: formData.email,
-      //     password: formData.password
-      //   })
-      // });
-      // const data = await response.json();
-      
-      // Simulated success
-      setTimeout(() => {
-        const userData = {
-          email: formData.email,
-          name: formData.email.split('@')[0]
-        };
-        onSignUpSuccess(userData);
-        setIsLoading(false);
-      }, 1000);
-      
+      // Call Flask backend via userAPI
+      const data = await userAPI.create({
+        email: formData.email,
+        password: formData.password
+      });
+
+      // Save JWT token for future authenticated requests
+      localStorage.setItem('token', data.token);
+
+      // Notify parent (auto-login behavior)
+      onSignUpSuccess(data.user);
+
     } catch (error) {
-      setErrors({ general: 'Sign up failed. Please try again.' });
+      setErrors({ general: error.message || 'Sign up failed. Please try again.' });
+    } finally {
       setIsLoading(false);
     }
   };

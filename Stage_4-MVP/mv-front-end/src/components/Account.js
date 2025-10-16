@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { userAPI } from '../services/api';
 
 function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -85,40 +86,26 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
     setIsLoading(true);
     setSuccessMessage('');
     
-    // TODO: Replace with actual API call to backend
     try {
-      // const response = await fetch('YOUR_BACKEND_API/user/profile', {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     firstName: formData.firstName,
-      //     lastName: formData.lastName,
-      //     email: formData.email,
-      //     currentPassword: formData.currentPassword,
-      //     newPassword: formData.newPassword
-      //   })
-      // });
-      // const data = await response.json();
+      const updatedUser = await userAPI.update(user.id, {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        current_password: formData.currentPassword,
+        new_password: formData.newPassword
+      });
+
+      onUpdateUser(updatedUser);
+      setIsEditing(false);
+      setSuccessMessage('Profile updated successfully!');
+      setFormData(prev => ({
+        ...prev,
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: ''
+      }));
+      setIsLoading(false);
       
-      setTimeout(() => {
-        const updatedUser = {
-          ...user,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          name: `${formData.firstName} ${formData.lastName}`
-        };
-        onUpdateUser(updatedUser);
-        setIsEditing(false);
-        setSuccessMessage('Profile updated successfully!');
-        setFormData(prev => ({
-          ...prev,
-          currentPassword: '',
-          newPassword: '',
-          confirmNewPassword: ''
-        }));
-        setIsLoading(false);
-      }, 1000);
       
     } catch (error) {
       setErrors({ general: 'Update failed. Please try again.' });
@@ -133,19 +120,14 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
     
     if (!confirmed) return;
 
-    // TODO: Replace with actual API call to backend
     try {
-      // const response = await fetch('YOUR_BACKEND_API/user/account', {
-      //   method: 'DELETE',
-      //   headers: { 'Content-Type': 'application/json' }
-      // });
-      
+      await userAPI.delete(user.id);
       alert('Account deleted successfully');
       onLogout();
-      
     } catch (error) {
       alert('Failed to delete account. Please try again.');
     }
+
   };
 
   const memberSinceDate = new Date(user.memberSince).toLocaleDateString('en-US', {
