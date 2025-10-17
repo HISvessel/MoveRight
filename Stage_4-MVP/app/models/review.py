@@ -68,6 +68,11 @@ class Review(BaseClass):
 
     def to_dict(self):
         data = super().to_dict()
+        
+        from app.models.user import User
+        user = User.query.get(self.user_id)
+        user_name = f"{user.first_name} {user.last_name}" if user else "Anonymous"
+
         data.update({
             "title": self.title,
             "comment": self.comment,
@@ -76,7 +81,7 @@ class Review(BaseClass):
             # Original: 'self.rating' (literal string) - would output {"self.rating": 5}
             # Corrected: 'rating' - outputs {"rating": 5}
             'rating': self.rating,
-            
-            'user_id': self.user_id
+            'user_id': self.user_id,
+            'user_name': user_name
         })
         return data
