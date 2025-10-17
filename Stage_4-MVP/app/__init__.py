@@ -48,7 +48,7 @@ def create_app():
     jwt = JWTManager(app)
     
     # Step 5: Initialize SocketIO
-    socketio.init_app(app)
+    socketio.init_app(app) #an error here, but why?
     
     # Import models BEFORE creating tables
     from app.models.user import User
