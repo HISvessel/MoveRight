@@ -26,18 +26,27 @@ const apiRequest = async (endpoint, options = {}) => {
       return null;
     }
 
-    const data = await response.json();
-    
-    // check if request failed
+    // Check if request failed FIRST
     if (!response.ok) {
-      throw new Error(data.message || 'Request failed');
+      // Try to get error message from response
+      let errorMessage = 'Request failed';
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch (e) {
+        // If JSON parsing fails, use status text
+        errorMessage = response.statusText || errorMessage;
+      }
+      throw new Error(errorMessage);
     }
 
-    return data;
+    // Only parse JSON if request was successful
+    return await response.json();
+    
   } catch (error) {
     console.error('API Error:', error);
     throw error;
-    }
+  }
 };
 
 // Authentication API

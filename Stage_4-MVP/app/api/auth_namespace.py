@@ -27,7 +27,7 @@ class Login(Resource):
     """User login endpoint"""
     
     @auth_api.expect(login_model)
-    @auth_api.marshal_with(login_response)
+    # @auth_api.marshal_with(login_response)
     def post(self):
         """Login with email and password"""
         # Get email and password from request

@@ -139,6 +139,22 @@ class UserDetail(Resource):
             if not user:
                 return {'message': f'User with ID {user_id} not found'}, 404
             
+            # Handle password change if provided
+            if data.get('new_password'):
+                # Verify current password first
+                if not data.get('current_password'):
+                    return {'message': 'Current password is required to change password'}, 400
+                
+                if not user.verify_password(data['current_password']):
+                    return {'message': 'Current password is incorrect'}, 401
+                
+                # Hash the new password before updating
+                data['password'] = user.hash_password(data['new_password'])
+                
+            # Remove password-related fields that shouldn't be in update
+            data.pop('current_password', None)
+            data.pop('new_password', None)
+            
             facade.user_service.update(user_id, data)
             # Get the updated user from database
             updated_user = facade.user_service.get(user_id)
