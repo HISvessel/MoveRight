@@ -89,5 +89,11 @@ def create_app():
     api.add_namespace(auth_api, path='/auth')
     api.add_namespace(camera_api, path='/camera')
     
+    # Test route for camera streaming
+    @app.route('/camera-test')
+    def camera_test():
+        from flask import send_from_directory
+        return send_from_directory('web', 'camera_test.html')
+    
     # Return configured app
     return app
