@@ -85,6 +85,7 @@ function App() {
       case 'exercise':
         return (
           <Exercise 
+            key="exercise-stable"
             exercise={currentExercise}
             onNavigate={setCurrentPage}
             onComplete={handleExerciseComplete}

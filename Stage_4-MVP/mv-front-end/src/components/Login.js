@@ -58,7 +58,7 @@ function Login({ onNavigate, onLoginSuccess }) {
       
       // Save JWT token to localStorage
       localStorage.setItem('token', data.token);
-      
+      localStorage.setItem('user_id', data.user.id);
       // Pass user data to parent component
       onLoginSuccess(data.user);
       
