@@ -57,6 +57,7 @@ class CameraStart(Resource):
             }, 400
 
         # Get camera source from request (optional)
+        #changed the previous IP address with a new one
         data = request.json or {}
         source = data.get('source', 'http://192.168.0.8:4747/video') #changed IP for my own source
 
@@ -245,7 +246,11 @@ def handle_frame_request(data):
             socketio.emit('error', {'message': 'No frame available'}, namespace='/camera')
             return
         #convert to 64 bytes->string-> and send to browser
+
+        #this was my new addition: Kevin
         pose_frames = PoseModel().draw_pose(frame)
+        #this ends my new addition
+
         frame_base64 = base64.b64encode(pose_frames).decode('utf-8')
         socketio.emit('frame', {'image': frame_base64}, namespace='/camera')
 
@@ -265,7 +270,12 @@ def stream_frames(user_id):
         if frame is None:
             continue
         #convert to 64 bytes->string-> and send to browser
-        frame_base64 = base64.b64encode(frame).decode('utf-8')
+
+        #new addition here
+        pose_frames = PoseModel().draw_pose(frame)
+        #section of new addition ends
+
+        frame_base64 = base64.b64encode(pose_frames).decode('utf-8')
         socketio.emit('frame', {'image': frame_base64}, namespace='/camera')
         socketio.sleep(0.016)
 
