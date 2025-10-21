@@ -1,0 +1,49 @@
+
+.exercise-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.camera-section {
+  margin: 2rem 0;
+}
+
+.camera-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.camera-feed {
+  width: 100%;
+  max-width: 640px;
+  min-height: 480px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #000;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.metric-card {
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.exercise-controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}

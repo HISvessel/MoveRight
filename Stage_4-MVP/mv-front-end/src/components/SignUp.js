@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { userAPI, authAPI } from '../services/api';
-
+import './Styles/SignUp.css';
 
 function SignUp({ onNavigate, onSignUpSuccess }) {
   const [formData, setFormData] = useState({

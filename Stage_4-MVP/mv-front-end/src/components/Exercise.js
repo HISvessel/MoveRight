@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
+import './Styles/Exercise.css';
 
 function Exercise({ exercise, onNavigate, onComplete }) {
   const [phase, setPhase] = useState('instructions');

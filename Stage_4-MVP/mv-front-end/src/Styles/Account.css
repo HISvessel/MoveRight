@@ -1,0 +1,28 @@
+.account-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.profile-section {
+  margin-bottom: 3rem;
+}
+
+.profile-info {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.preferences-section label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.danger-zone {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-top: 3rem;
+}

@@ -1,0 +1,40 @@
+.results-page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.results-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.performance-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.analysis-section {
+  margin: 2rem 0;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.next-exercises {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .performance-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .next-exercises {
+    grid-template-columns: 1fr;
+  }
+}
