@@ -1,5 +1,5 @@
 import React from 'react';
-import './Styles/Results.css';
+import '../styles/Results.css';
 
 function Results({ results, exercise, onNavigate, onStartExercise }) {
   const exercises = [

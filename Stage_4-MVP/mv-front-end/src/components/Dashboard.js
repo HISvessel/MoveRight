@@ -1,5 +1,5 @@
 import React from 'react';
-import './Styles/Dashboard.css';
+import '../styles/Dashboard.css';
 
 function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
   const exercises = [

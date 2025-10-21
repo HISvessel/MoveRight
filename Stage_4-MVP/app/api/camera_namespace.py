@@ -24,6 +24,9 @@ active_streams = {}
 # Dictionary to track which user owns which WebSocket session
 session_to_user = {}
 
+# CREATE POSE MODEL ONCE (reuse for all frames)
+pose_model = PoseModel()
+
 # Camera start input model
 camera_start_input = camera_api.model('CameraStart', {
     'source': fields.String(description='Camera source', 
@@ -59,8 +62,8 @@ class CameraStart(Resource):
         # Get camera source from request (optional)
         #changed the previous IP address with a new one
         data = request.json or {}
-        source = data.get('source', 'http://192.168.0.8:4747/video') #changed IP for my own source
-
+        # source = data.get('source', 'http://192.168.0.8:4747/video') #changed IP for my own source
+        source = data.get('source', 'http://192.168.0.6:8080/video')
         try:
             # Create camera instance for this user
             camera = Camera(source=source, user_id=current_user_id)
@@ -240,23 +243,33 @@ def handle_frame_request(data):
             socketio.emit('error', {'message': 'Camera not running'}, namespace='/camera')
             return
 
-        frame = camera.get_jpeg_frame()
+        frame = camera.get_frame() # Changed to get_frame()
 
         if frame is None:
             socketio.emit('error', {'message': 'No frame available'}, namespace='/camera')
             return
         #convert to 64 bytes->string-> and send to browser
 
-        #this was my new addition: Kevin
-        pose_frames = PoseModel().draw_pose(frame)
-        #this ends my new addition
-
-        frame_base64 = base64.b64encode(pose_frames).decode('utf-8')
+        # Apply pose detection
+        try:
+            import cv2
+            pose_frame = pose_model.draw_pose(frame)
+            
+            # Encode to JPEG
+            success, buffer = cv2.imencode('.jpg', pose_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+            if not success:
+                socketio.emit('error', {'message': 'Encoding failed'}, namespace='/camera')
+                return
+            
+            frame_base64 = base64.b64encode(buffer.tobytes()).decode('utf-8')
+        except Exception as e:
+            print(f'[POSE] Error in request_frame: {e}')
+            socketio.emit('error', {'message': str(e)}, namespace='/camera')
+            return
         socketio.emit('frame', {'image': frame_base64}, namespace='/camera')
 
     except Exception as e:
         socketio.emit('error', {'message': str(e)}, namespace='/camera')
-
 # Background task for continuous streaming
 def stream_frames(user_id):
     """Continuously capture and send frames for a user's camera"""
@@ -266,18 +279,27 @@ def stream_frames(user_id):
     camera = active_cameras[user_id]
 
     while camera.is_running() and active_streams.get(user_id, False):
-        frame = camera.get_jpeg_frame()
+        frame = camera.get_frame()
         if frame is None:
             continue
+         
         #convert to 64 bytes->string-> and send to browser
+        # Apply pose detection
+        try:
+            pose_frame = pose_model.draw_pose(frame)
+        except Exception as e:
+            print(f'[POSE] Error: {e}')
+            pose_frame = frame  # Use original if pose fails
+        
+        # Encode as JPEG
+        import cv2
+        success, buffer = cv2.imencode('.jpg', pose_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        if not success:
+            continue
 
-        #new addition here
-        pose_frames = PoseModel().draw_pose(frame)
-        #section of new addition ends
-
-        frame_base64 = base64.b64encode(pose_frames).decode('utf-8')
+        frame_base64 = base64.b64encode(buffer.tobytes()).decode('utf-8')
         socketio.emit('frame', {'image': frame_base64}, namespace='/camera')
-        socketio.sleep(0.016)
+        socketio.sleep(0.033)
 
 # Start continuous video streaming
 @socketio.on('start_stream', namespace='/camera')
