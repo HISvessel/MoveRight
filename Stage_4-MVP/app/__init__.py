@@ -53,6 +53,7 @@ def create_app():
     # Import models BEFORE creating tables
     from app.models.user import User
     from app.models.review import Review
+    from app.models.workout_result import WorkoutResult
     
     # Step 6: Create tables (if they don't exist)
     with app.app_context():
@@ -83,11 +84,13 @@ def create_app():
     from app.api.review_namespace import review_api
     from app.api.auth_namespace import auth_api
     from app.api.camera_namespace import camera_api
+    from app.api.result_namespace import workout_api
     
     api.add_namespace(user_api, path='/users')
     api.add_namespace(review_api, path='/reviews')
     api.add_namespace(auth_api, path='/auth')
     api.add_namespace(camera_api, path='/camera')
+    api.add_namespace(workout_api, path='/workout-results')
     
     # Test route for camera streaming
     @app.route('/camera-test')
