@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { userAPI } from '../services/api';
+import '../styles/Account.css';
 
 function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   console.log('User object:', user);

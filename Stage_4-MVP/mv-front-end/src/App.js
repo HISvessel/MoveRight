@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './styles/App.css';
 import LandingPage from './components/LandingPage';
 import SignUp from './components/SignUp';
 import Login from './components/Login';

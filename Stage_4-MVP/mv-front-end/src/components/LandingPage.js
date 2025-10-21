@@ -1,5 +1,6 @@
 import React from 'react';
 import UserReviews from './UserReviews';
+import '../styles/LandingPage.css';
 
 function LandingPage({ onNavigate }) {
   return (

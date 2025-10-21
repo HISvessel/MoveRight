@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { reviewAPI } from '../services/api';
+import '../styles/ReviewForm.css';
 
 function ReviewForm({ user, onNavigate }) {
   const [formData, setFormData] = useState({

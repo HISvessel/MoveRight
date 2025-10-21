@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { reviewAPI } from '../services/api';
+import '../styles/UserReviews.css';
 
 function UserReviews() {
   const [reviews, setReviews] = useState([]);
