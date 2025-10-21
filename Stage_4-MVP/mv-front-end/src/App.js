@@ -4,8 +4,8 @@ import LandingPage from './components/LandingPage';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
-import Exercise from './components/Exercise';
 import Account from './components/Account';
+import Exercise from './components/Exercise';
 import Results from './components/Results';
 import ReviewForm from './components/ReviewForm';
 
@@ -104,50 +104,59 @@ function App() {
     localStorage.setItem('exerciseResults', JSON.stringify(results));
     setCurrentPage('results');
   };
+  
 
   const renderPage = () => {
     switch(currentPage) {
       case 'landing':
         return <LandingPage onNavigate={setCurrentPage} />;
+      
       case 'signup':
         return <SignUp onNavigate={setCurrentPage} onSignUpSuccess={handleSignUpSuccess} />;
+      
       case 'login':
         return <Login onNavigate={setCurrentPage} onLoginSuccess={handleLoginSuccess} />;
+      
       case 'dashboard':
         return (
           <Dashboard 
-            user={user}
+            user={user} 
             onNavigate={setCurrentPage}
             onStartExercise={handleStartExercise}
             onLogout={handleLogout}
           />
         );
-      case 'exercise':
-        return (
-          <Exercise 
-            exercise={selectedExercise}
-            onNavigate={setCurrentPage}
-            onComplete={handleExerciseComplete}
-          />
-        );
+      
       case 'account':
         return (
           <Account 
             user={user}
             onNavigate={setCurrentPage}
-            onUpdateUser={setUser}
+            onUpdateUser={handleUpdateUser}
             onLogout={handleLogout}
           />
         );
+      
+      case 'exercise':
+        return (
+          <Exercise 
+            key="exercise-stable"
+            exercise={currentExercise}
+            onNavigate={setCurrentPage}
+            onComplete={handleExerciseComplete}
+          />
+        );
+      
       case 'results':
         return (
           <Results 
-            results={workoutResults}
-            exercise={selectedExercise}
+            results={exerciseResults}
+            exercise={currentExercise}
             onNavigate={setCurrentPage}
             onStartExercise={handleStartExercise}
           />
         );
+      
       case 'review':
         return (
           <ReviewForm 
@@ -155,6 +164,7 @@ function App() {
             onNavigate={setCurrentPage}
           />
         );
+      
       default:
         return <LandingPage onNavigate={setCurrentPage} />;
     }
