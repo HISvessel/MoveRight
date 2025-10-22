@@ -62,8 +62,8 @@ class CameraStart(Resource):
         # Get camera source from request (optional)
         #changed the previous IP address with a new one
         data = request.json or {}
-        # source = data.get('source', 'http://192.168.0.8:4747/video') #changed IP for my own source
-        source = data.get('source', 'http://192.168.0.6:8080/video')
+        source = data.get('source', 'http://192.168.0.8:4747/video') #changed IP for my own source
+        #source = data.get('source', 'http://192.168.0.6:8080/video')
         try:
             # Create camera instance for this user
             camera = Camera(source=source, user_id=current_user_id)
@@ -243,7 +243,7 @@ def handle_frame_request(data):
             socketio.emit('error', {'message': 'Camera not running'}, namespace='/camera')
             return
 
-        frame = camera.get_frame() # Changed to get_frame()
+        frame = camera.get_jpeg_frame() # Changed to get_frame()
 
         if frame is None:
             socketio.emit('error', {'message': 'No frame available'}, namespace='/camera')
@@ -252,16 +252,16 @@ def handle_frame_request(data):
 
         # Apply pose detection
         try:
-            import cv2
-            pose_frame = pose_model.draw_pose(frame)
+            #import cv2
+            #pose_frame = pose_model.draw_pose(frame)
             
             # Encode to JPEG
-            success, buffer = cv2.imencode('.jpg', pose_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
-            if not success:
-                socketio.emit('error', {'message': 'Encoding failed'}, namespace='/camera')
-                return
+            #success, buffer = cv2.imencode('.jpg', pose_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+            #if not success:
+            #    socketio.emit('error', {'message': 'Encoding failed'}, namespace='/camera')
+            #    return
             
-            frame_base64 = base64.b64encode(buffer.tobytes()).decode('utf-8')
+            frame_base64 = base64.b64encode(frame).decode('utf-8') #replaced buffer.to_bytes() for pre loaded encoded frames
         except Exception as e:
             print(f'[POSE] Error in request_frame: {e}')
             socketio.emit('error', {'message': str(e)}, namespace='/camera')
@@ -279,25 +279,25 @@ def stream_frames(user_id):
     camera = active_cameras[user_id]
 
     while camera.is_running() and active_streams.get(user_id, False):
-        frame = camera.get_frame()
+        frame = camera.get_jpeg_frame()
         if frame is None:
             continue
          
         #convert to 64 bytes->string-> and send to browser
         # Apply pose detection
-        try:
-            pose_frame = pose_model.draw_pose(frame)
-        except Exception as e:
-            print(f'[POSE] Error: {e}')
-            pose_frame = frame  # Use original if pose fails
+        #try:
+        #    pose_frame = pose_model.draw_pose(frame)
+        #except Exception as e:
+        #    print(f'[POSE] Error: {e}')
+        #    pose_frame = frame  # Use original if pose fails
         
         # Encode as JPEG
-        import cv2
-        success, buffer = cv2.imencode('.jpg', pose_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
-        if not success:
-            continue
+        #import cv2
+        #success, buffer = cv2.imencode('.jpg', pose_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        #if not success:
+        #    continue
 
-        frame_base64 = base64.b64encode(buffer.tobytes()).decode('utf-8')
+        frame_base64 = base64.b64encode(frame).decode('utf-8') #replaced buffer.to_bytes()
         socketio.emit('frame', {'image': frame_base64}, namespace='/camera')
         socketio.sleep(0.033)
 

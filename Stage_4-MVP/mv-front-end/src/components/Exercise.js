@@ -105,8 +105,8 @@ function Exercise({ exercise, onNavigate, onComplete }) {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          // source: 'http://192.168.0.4:8080/video' // Kevin IP address
-          source: 'http://192.168.0.6:8080/video' // Joe IP
+          source: 'http://192.168.0.8:4747/video' // Kevin IP address
+          //source: 'http://192.168.0.6:8080/video' // Joe IP
           // Change to source: 0 for laptop webcam
         })
       });

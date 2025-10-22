@@ -11,6 +11,7 @@ import threading
 import time
 from datetime import datetime
 from app.models.video_source import VideoSource
+from app.models.pose_model import PoseModel
 
 
 class Camera:
@@ -54,6 +55,7 @@ class Camera:
         # Start background thread
         self.thread = threading.Thread(target=self._update_frame, daemon=True)
         self.thread.start()
+        self.pose = PoseModel()
     
     def _update_frame(self):
         """
@@ -78,40 +80,44 @@ class Camera:
                     self._frame_count = 0
                     self._last_time = now
             else:
+                print(f'Attempting to read from source: {self.source}')
                 print(f"[CAMERA] Frame capture failed at {datetime.now()}")
                 time.sleep(0.1)  # Brief pause before retry
     
     def get_frame(self):
         """
         Get the latest frame as numpy array.
-        
+
         Returns:
             numpy.ndarray: Latest captured frame, or None if not available
         """
         with self.lock:
             return self.frame.copy() if self.frame is not None else None
-    
+
     def get_jpeg_frame(self, quality=85):
         """
         Get latest frame encoded as JPEG bytes.
-        
+
         Used for streaming frames over HTTP/WebSocket.
-        
+
         Args:
             quality: JPEG quality (1-100, default 85)
-            
+
         Returns:
             bytes: JPEG-encoded frame, or None if frame not available
         """
         frame = self.get_frame()
-        
+
         if frame is None:
             return None
-        
-        # Encode frame as JPEG
+
+        #drawing landmarks
+        pose_frame = self.pose.draw_pose(frame)
+
+        # Encode pose frame as JPEG
         success, buffer = cv.imencode(
             '.jpg', 
-            frame, 
+            pose_frame, 
             [cv.IMWRITE_JPEG_QUALITY, quality]
         )
         
