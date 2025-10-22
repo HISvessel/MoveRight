@@ -9,6 +9,9 @@ function Exercise({ exercise, onNavigate, onComplete }) {
   const [reps, setReps] = useState(0);
   const [currentSet, setCurrentSet] = useState(1);
   const [formScore, setFormScore] = useState(0);
+  const [svmPrediction, setSvmPrediction] = useState(null);
+  const [angles, setAngles] = useState(null);
+  const [svmConfidence, setSvmConfidence] = useState(0);
   
   // WebSocket and Camera states
   const [cameraStatus, setCameraStatus] = useState('stopped'); // stopped, starting, running
@@ -38,8 +41,28 @@ function Exercise({ exercise, onNavigate, onComplete }) {
 
     // Receive frames from server
     socketRef.current.on('frame', (data) => {
+      // Display video frame
       if (videoRef.current) {
         videoRef.current.src = 'data:image/jpeg;base64,' + data.image;
+      }
+      
+      // Update SVM data if available
+      if (data.analysis) {
+        if (data.analysis.svm) {
+          setSvmPrediction(data.analysis.svm.prediction);
+          setSvmConfidence(data.analysis.svm.confidence);
+          
+          // Update form score based on SVM
+          if (data.analysis.svm.is_good_form) {
+            setFormScore(Math.min(100, 85 + Math.round(data.analysis.svm.confidence * 5)));
+          } else {
+            setFormScore(Math.max(0, 60 - Math.abs(Math.round(data.analysis.svm.confidence * 5))));
+          }
+        }
+        
+        if (data.analysis.angles) {
+          setAngles(data.analysis.angles);
+        }
       }
     });
 
@@ -105,8 +128,8 @@ function Exercise({ exercise, onNavigate, onComplete }) {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          source: 'http://192.168.0.8:4747/video' // Kevin IP address
-          //source: 'http://192.168.0.6:8080/video' // Joe IP
+          // source: 'http://192.168.0.8:4747/video' // Kevin IP address
+          source: 'http://192.168.0.6:8080/video' // Joe IP
           // Change to source: 0 for laptop webcam
         })
       });
@@ -158,8 +181,28 @@ function Exercise({ exercise, onNavigate, onComplete }) {
 
   // Start WebSocket streaming
   const handleStartStream = () => {
+    console.log('🎬 Attempting to start stream...'); // ADD THIS
+    console.log('Socket:', socketRef.current);        // ADD THIS
+    console.log('User ID:', userId);                  // ADD THIS
+    
     if (socketRef.current && userId) {
-      socketRef.current.emit('start_stream', { user_id: userId });
+      // Detect exercise type for backend
+      let exerciseType = 'squat'; // default
+      if (exercise.name.toLowerCase().includes('push')) {
+        exerciseType = 'pushup';
+      } else if (exercise.name.toLowerCase().includes('squat')) {
+        exerciseType = 'squat';
+      } else if (exercise.name.toLowerCase().includes('sit')) {
+        exerciseType = 'squat'; // Treat sit-ups like squats for now (no SVM model yet)
+      }
+      console.log('🎬 Starting stream with exercise:', exerciseType); // ADD THIS
+      
+      socketRef.current.emit('start_stream', { 
+        user_id: userId,
+        exercise: exerciseType
+      });
+    } else {
+      console.error('❌ Cannot start stream - missing socket or userId'); // ADD THIS
     }
   };
 
@@ -337,9 +380,35 @@ function Exercise({ exercise, onNavigate, onComplete }) {
           <section>
             <h3>Form Feedback</h3>
             <div>
-              {formScore >= 80 && <p>✓ Excellent form! Keep it up!</p>}
-              {formScore >= 60 && formScore < 80 && <p>⚠ Good, but watch your posture</p>}
-              {formScore < 60 && <p>⚠ Adjust your form - keep your back straight</p>}
+              {/* SVM Prediction */}
+              {svmPrediction === 'good' && (
+                <p style={{ color: 'green', fontSize: '1.2em', fontWeight: 'bold' }}>
+                  ✅ Good Form! (Confidence: {svmConfidence.toFixed(2)})
+                </p>
+              )}
+              {svmPrediction === 'bad' && (
+                <p style={{ color: 'orange', fontSize: '1.2em', fontWeight: 'bold' }}>
+                  ⚠️ Improve Form (Confidence: {Math.abs(svmConfidence).toFixed(2)})
+                </p>
+              )}
+              
+              {/* Angles Display */}
+              {angles && (
+                <div style={{ marginTop: '10px', fontSize: '0.9em' }}>
+                  <p><strong>Joint Angles:</strong></p>
+                  {angles.elbow && <p>Elbow: {angles.elbow}°</p>}
+                  {angles.body && <p>Body: {angles.body}°</p>}
+                  {angles.shoulder && <p>Shoulder: {angles.shoulder}°</p>}
+                  {angles.knee && <p>Knee: {angles.knee}°</p>}
+                  {angles.hip && <p>Hip: {angles.hip}°</p>}
+                  {angles.back && <p>Back: {angles.back}°</p>}
+                </div>
+              )}
+              
+              {/* Fallback if no SVM data yet */}
+              {!svmPrediction && (
+                <p>Analyzing form...</p>
+              )}
             </div>
           </section>
 

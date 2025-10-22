@@ -12,6 +12,7 @@ from app import socketio
 import base64
 from flask_socketio import emit
 from app.models.pose_model import PoseModel
+from app.services.svm_classifier import SVMFormClassifier
 
 camera_api = Namespace('camera', description='Camera operations')
 
@@ -27,6 +28,13 @@ session_to_user = {}
 # CREATE POSE MODEL ONCE (reuse for all frames)
 pose_model = PoseModel()
 
+# Load SVM
+try:
+    svm_classifier = SVMFormClassifier()
+except:
+    svm_classifier = None
+    print("⚠️ SVM not loaded")
+
 # Camera start input model
 camera_start_input = camera_api.model('CameraStart', {
     'source': fields.String(description='Camera source', 
@@ -40,6 +48,65 @@ camera_response = camera_api.model('CameraResponse', {
     'fps': fields.Float(description='Current FPS')
 })
 
+def analyze_frame_with_svm(frame, exercise_type='pushup'):
+    """Analyze frame with MediaPipe + SVM"""
+    import cv2
+    
+    # MediaPipe pose detection
+    pose_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = pose_model.pose.process(pose_frame)
+    
+    if not results.pose_landmarks:
+        return None
+    
+    landmarks = results.pose_landmarks.landmark
+    
+    # Calculate angles based on exercise
+    if exercise_type == 'pushup':
+        l_shoulder = [landmarks[11].x, landmarks[11].y]
+        l_elbow = [landmarks[13].x, landmarks[13].y]
+        l_wrist = [landmarks[15].x, landmarks[15].y]
+        l_hip = [landmarks[23].x, landmarks[23].y]
+        l_ankle = [landmarks[27].x, landmarks[27].y]
+        l_ear = [landmarks[7].x, landmarks[7].y]
+        
+        elbow_angle = pose_model.calculate_joint_angle(l_shoulder, l_elbow, l_wrist)
+        body_angle = pose_model.calculate_joint_angle(l_shoulder, l_hip, l_ankle)
+        shoulder_angle = pose_model.calculate_joint_angle(l_ear, l_shoulder, l_elbow)
+        
+        angles = [elbow_angle, body_angle, shoulder_angle]
+        angle_dict = {
+            'elbow': round(elbow_angle, 1),
+            'body': round(body_angle, 1),
+            'shoulder': round(shoulder_angle, 1)
+        }
+    else:  # squat
+        l_hip = [landmarks[23].x, landmarks[23].y]
+        l_knee = [landmarks[25].x, landmarks[25].y]
+        l_ankle = [landmarks[27].x, landmarks[27].y]
+        l_shoulder = [landmarks[11].x, landmarks[11].y]
+        
+        knee_angle = pose_model.calculate_joint_angle(l_hip, l_knee, l_ankle)
+        hip_angle = pose_model.calculate_joint_angle(l_shoulder, l_hip, l_knee)
+        back_angle = pose_model.calculate_joint_angle(l_shoulder, l_hip, l_ankle)
+        
+        angles = [knee_angle, hip_angle, back_angle]
+        angle_dict = {
+            'knee': round(knee_angle, 1),
+            'hip': round(hip_angle, 1),
+            'back': round(back_angle, 1)
+        }
+    
+    # SVM prediction
+    svm_result = None
+    if svm_classifier:
+        svm_result = svm_classifier.predict_form(exercise_type, angles)
+    
+    return {
+        'angles': angle_dict,
+        'svm': svm_result
+    }
+    
 @camera_api.route('/start')
 class CameraStart(Resource):
     """Start camera session"""
@@ -62,8 +129,8 @@ class CameraStart(Resource):
         # Get camera source from request (optional)
         #changed the previous IP address with a new one
         data = request.json or {}
-        source = data.get('source', 'http://192.168.0.8:4747/video') #changed IP for my own source
-        #source = data.get('source', 'http://192.168.0.6:8080/video')
+        # source = data.get('source', 'http://192.168.0.8:4747/video') #changed IP for my own source
+        source = data.get('source', 'http://192.168.0.6:8080/video')
         try:
             # Create camera instance for this user
             camera = Camera(source=source, user_id=current_user_id)
@@ -232,6 +299,7 @@ def handle_frame_request(data):
     """Send a single frame to the requesting client"""
     try:
         user_id = data.get('user_id')
+        exercise_type = data.get('exercise', 'pushup')  # NEW: get exercise type
 
         if user_id not in active_cameras:
             socketio.emit('error', {'message': 'No active camera session'}, namespace='/camera')
@@ -243,40 +311,70 @@ def handle_frame_request(data):
             socketio.emit('error', {'message': 'Camera not running'}, namespace='/camera')
             return
 
+        # NEW: Analyze raw frame with SVM
+        raw_frame = camera.get_frame()
+        analysis = None
+        if raw_frame is not None:
+            analysis = analyze_frame_with_svm(raw_frame, exercise_type)
+
+        # Get JPEG frame (same as before)
         frame = camera.get_jpeg_frame()
 
         if frame is None:
             socketio.emit('error', {'message': 'No frame available'}, namespace='/camera')
             return
-        #convert to 64 bytes->string-> and send to browser
 
-        try:
-            #convert to 64 bytes-> string and send to the browser
-            frame_base64 = base64.b64encode(frame).decode('utf-8')
-        except Exception as e:
-            print(f'[POSE] Error in request_frame: {e}')
-            socketio.emit('error', {'message': str(e)}, namespace='/camera')
-            return
-        socketio.emit('frame', {'image': frame_base64}, namespace='/camera')
+        # Encode to base64 (same as before)
+        frame_base64 = base64.b64encode(frame).decode('utf-8')
+        
+        # NEW: Send frame + analysis
+        socketio.emit('frame', {
+            'image': frame_base64,
+            'analysis': analysis  # NEW: include SVM results
+        }, namespace='/camera')
 
     except Exception as e:
+        print(f'[ERROR] {e}')
         socketio.emit('error', {'message': str(e)}, namespace='/camera')
 # Background task for continuous streaming
-def stream_frames(user_id):
+def stream_frames(user_id, exercise_type='pushup'):
     """Continuously capture and send frames for a user's camera"""
+    print(f"[STREAM] Starting stream_frames for user {user_id}, exercise: {exercise_type}")  # ADD THIS
+    
     if user_id not in active_cameras:
+        print(f"[STREAM] ERROR: User {user_id} not in active_cameras")  # ADD THIS
         return
 
     camera = active_cameras[user_id]
 
     while camera.is_running() and active_streams.get(user_id, False):
-        frame = camera.get_jpeg_frame()
-        if frame is None:
-            continue
+        try:  # ADD THIS
+            # Get raw frame for analysis
+            raw_frame = camera.get_frame()
+            
+            # Analyze with SVM
+            analysis = None
+            if raw_frame is not None:
+                analysis = analyze_frame_with_svm(raw_frame, exercise_type)
+                print(f"[STREAM] Analysis result: {analysis}")  # ADD THIS
+            
+            # Get JPEG frame
+            frame = camera.get_jpeg_frame()
+            if frame is None:
+                continue
 
-        frame_base64 = base64.b64encode(frame).decode('utf-8') #replaced buffer.to_bytes()
-        socketio.emit('frame', {'image': frame_base64}, namespace='/camera')
-        socketio.sleep(0.033)
+            frame_base64 = base64.b64encode(frame).decode('utf-8')
+            socketio.emit('frame', {
+                'image': frame_base64,
+                'analysis': analysis
+            }, namespace='/camera')
+            socketio.sleep(0.033)
+            
+        except Exception as e:  # ADD THIS
+            print(f"[STREAM] ERROR in loop: {e}")  # ADD THIS
+            import traceback  # ADD THIS
+            traceback.print_exc()  # ADD THIS
+            break  # ADD THIS
 
 # Start continuous video streaming
 @socketio.on('start_stream', namespace='/camera')
@@ -284,6 +382,10 @@ def handle_start_stream(data):
     """Start continuous frame streaming for user's camera"""
     try:
         user_id = data.get('user_id')
+        exercise_type = data.get('exercise')
+        if not exercise_type:
+            socketio.emit('error', {'message': 'Exercise type required'}, namespace='/camera')
+            return
 
         # Track which session belongs to this user
         session_to_user[request.sid] = user_id
@@ -294,7 +396,7 @@ def handle_start_stream(data):
 
         camera = active_cameras[user_id]
         active_streams[user_id] = True
-        socketio.start_background_task(stream_frames, user_id)
+        socketio.start_background_task(stream_frames, user_id, exercise_type)
 
         socketio.emit('stream_started', {'status': 'streaming'}, namespace='/camera')
 

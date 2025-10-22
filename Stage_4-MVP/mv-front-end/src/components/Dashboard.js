@@ -5,35 +5,27 @@ function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
   const exercises = [
     { 
       id: 1, 
-      name: 'Push-ups', 
+      name: 'Pushups', 
       duration: '3 sets x 12 reps', 
       muscles: 'Chest, Triceps, Shoulders',
-      difficulty: 'Beginner',
-      description: 'Classic upper body exercise for building chest and arm strength'
+      difficulty: 'Medium',
+      description: 'A fundamental upper body exercise that builds strength in your chest, shoulders, and triceps.'
     },
     { 
       id: 2, 
       name: 'Squats', 
       duration: '3 sets x 15 reps', 
-      muscles: 'Quads, Glutes, Core',
-      difficulty: 'Beginner',
-      description: 'Fundamental lower body exercise for leg strength and stability'
+      muscles: 'Quads, Glutes, Hamstrings',
+      difficulty: 'Medium',
+      description: 'A powerful lower body exercise targeting your legs and glutes.'
     },
     { 
       id: 3, 
-      name: 'Plank', 
-      duration: '3 sets x 60 sec', 
-      muscles: 'Core, Shoulders',
-      difficulty: 'Intermediate',
-      description: 'Isometric core exercise that builds endurance and stability'
-    },
-    { 
-      id: 4, 
-      name: 'Lunges', 
-      duration: '3 sets x 10 reps per leg', 
-      muscles: 'Legs, Glutes',
-      difficulty: 'Beginner',
-      description: 'Single-leg exercise for balance and lower body strength'
+      name: 'Sit-ups', 
+      duration: '3 sets x 20 reps', 
+      muscles: 'Abs, Core',
+      difficulty: 'Easy',
+      description: 'A classic core exercise that strengthens your abdominal muscles.'
     }
   ];
 

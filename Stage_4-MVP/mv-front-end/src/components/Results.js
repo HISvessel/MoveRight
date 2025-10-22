@@ -3,10 +3,9 @@ import '../styles/Results.css';
 
 function Results({ results, exercise, onNavigate, onStartExercise }) {
   const exercises = [
-    { id: 1, name: 'Push-ups', duration: '3 sets x 12 reps', muscles: 'Chest, Triceps, Shoulders' },
-    { id: 2, name: 'Squats', duration: '3 sets x 15 reps', muscles: 'Quads, Glutes, Core' },
-    { id: 3, name: 'Plank', duration: '3 sets x 60 sec', muscles: 'Core, Shoulders' },
-    { id: 4, name: 'Lunges', duration: '3 sets x 10 reps per leg', muscles: 'Legs, Glutes' }
+    { id: 1, name: 'Pushups', duration: '3 sets x 12 reps', muscles: 'Chest, Triceps, Shoulders' },
+    { id: 2, name: 'Squats', duration: '3 sets x 15 reps', muscles: 'Quads, Glutes, Hamstrings' },
+    { id: 3, name: 'Sit-ups', duration: '3 sets x 20 reps', muscles: 'Abs, Core' }
   ];
 
   const formatTime = (seconds) => {
