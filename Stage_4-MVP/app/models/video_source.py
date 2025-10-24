@@ -17,10 +17,10 @@ class VideoSource:
             Working source (int or str), or None if nothing found
         """
         # UPDATE THIS with IP Webcam URL
-        # ip_source = 'http://192.168.0.7:8080/video' Kevin IP
-        ip_source = 'http://192.168.0.6:8080/video' #Joe IP
+        ip_source1 = 'http://192.168.0.8:4747/video' #Kevin IP
+        ip_source2 = 'http://192.168.0.6:8080/video' #Joe IP
         
-        sources_to_try = [ip_source, 0, 1, 2]
+        sources_to_try = [ip_source1, ip_source2, 0, 1, 2]
         
         print("[VideoSource] Searching for video source...")
         

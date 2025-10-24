@@ -4,10 +4,10 @@ import cv2 as cv
 import numpy as np
 
 class PoseModel():
-    def __init__(self):
-        self.pose = Pose()
-        self.draw = drawing_utils
-        self.connections = frozenset([(11, 12), (11, 13), (13, 15), (12, 14), (14, 16), (11, 23),
+    #def __init__(self):
+    pose = Pose()
+    draw = drawing_utils
+    connections = frozenset([(11, 12), (11, 13), (13, 15), (12, 14), (14, 16), (11, 23),
                                       (12, 24), (23, 25), (24, 26), (25, 27), (26, 28)])
 
     @staticmethod
@@ -60,9 +60,11 @@ class PoseModel():
             self.draw.draw_landmarks(pose_frames, #frames to draw on
                                      process.pose_landmarks, #landmarks to draw, set to default
                                      self.connections, #chosen connections to draw(no face connections)
-                                     self.draw.DrawingSpec((112, 112, 112), 2, 2), #pose landmark drawings
-                                     self.draw.DrawingSpec((0, 200, 50), 3, 3)) #pose connection drawings
-        
+                                     self.draw.DrawingSpec((112, 112, 112), 3, 3), #pose landmark drawings
+                                     self.draw.DrawingSpec((100, 200, 20), 2, 2)) #pose connection drawings
+        cv.rectangle(pose_frames, (0, 0), (200, 200), (90, 150, 90), -1)
+        cv.putText(pose_frames, 'Regular sesh(no math)', cv.FONT_HERSHEY_DUPLEX,
+                   0.9, (25, 150, 10), cv.LINE_AA)
         return cv.cvtColor(pose_frames, cv.COLOR_RGB2BGR)
 
     def draw_pushup_pose(self, frames):
@@ -88,11 +90,41 @@ class PoseModel():
             r_knee = landmarks[26]
             l_ankle = landmarks[27]
             r_ankle = landmarks[28]
+            """
+            left_arm_bending = PoseModel.calculate_joint_angle([l_shoulder.x, l_shoulder.y],
+                                                               [l_elbow.x, l_elbow.y],
+                                                               [l_wrist.x, l_wrist.y])
+
+            right_arm_bending = PoseModel.calculate_joint_angle([r_shoulder.x, r_shoulder.y],
+                                                                [r_elbow.x, r_elbow.y],
+                                                                [r_wrist.x, r_wrist.y])
+
+            left_arm_lateral_flare = PoseModel.calculate_joint_angle([l_hip.y, l_hip.x],
+                                                                    [l_shoulder.y, l_shoulder.x],
+                                                                    [l_elbow.y, l_elbow.x])
+
+            right_arm_lateral_flare = PoseModel.calculate_joint_angle([r_hip.y, r_hip.x],
+                                                                    [r_shoulder.y, r_shoulder.x],
+                                                                    [r_elbow.y, r_elbow.x])
+
+            #calculating body angle and comparing angles for imbalances
+            pushup_body_angle_l = PoseModel.calculate_body_angle([l_wrist.y, l_wrist.x],
+                                                               [l_hip.y, l_hip.x],
+                                                               [l_ankle.y, l_ankle.x])
+
+            pushup_body_angle_r = PoseModel.calculate_body_angle([l_wrist.y, l_wrist.x],
+                                                               [l_hip.y, l_hip.x],
+                                                               [l_ankle.y, l_ankle.x])
+            """
+            #drawingg an exclusive rectanlg eindicating the exercise to perform
+            cv.rectangle(pose_frames, (0, 0), (200, 200), (90, 150, 10), -1)
+            cv.putText(pose_frames, 'Pushup sesh', cv.FONT_HERSHEY_SIMPLEX,
+                       [100, 50], 0.9, (40, 150, 10), cv.LINE_AA)
             self.draw.draw_landmarks(pose_frames, #frames to draw on
-                                     process.pose_landmarks, #landmarks to draw, set to default
+                              process.pose_landmarks, #landmarks to draw, set to default
                                      self.connections, #chosen connections to draw(no face connections)
                                      self.draw.DrawingSpec((112, 112, 112), 2, 2), #pose landmark drawings
-                                     self.draw.DrawingSpec((0, 200, 50), 3, 3)) #pose connection drawings
+                                     self.draw.DrawingSpec((100, 200, 20), 2, 2)) #pose connection drawings
 
         return cv.cvtColor(pose_frames, cv.COLOR_RGB2BGR)
 
@@ -119,11 +151,42 @@ class PoseModel():
             r_knee = landmarks[26]
             l_ankle = landmarks[27]
             r_ankle = landmarks[28]
+
+            """
+            left_leg_bending = PoseModel.calculate_joint_angle([l_shoulder.x, l_shoulder.y],
+                                                               [l_elbow.x, l_elbow.y],
+                                                               [l_wrist.x, l_wrist.y])
+
+            right_leg_bending = PoseModel.calculate_joint_angle([r_shoulder.x, r_shoulder.y],
+                                                                [r_elbow.x, r_elbow.y],
+                                                                [r_wrist.x, r_wrist.y])
+
+            left_leg_lateral_flare = PoseModel.calculate_joint_angle([l_hip.y, l_hip.x],
+                                                                    [l_shoulder.y, l_shoulder.x],
+                                                                    [l_elbow.y, l_elbow.x])
+
+            right_leg_lateral_flare = PoseModel.calculate_joint_angle([r_hip.y, r_hip.x],
+                                                                    [r_shoulder.y, r_shoulder.x],
+                                                                    [r_elbow.y, r_elbow.x])
+
+            #calculating body angle and comparing angles for imbalances
+            pushup_body_angle_l = PoseModel.calculate_body_angle([l_wrist.y, l_wrist.x],
+                                                               [l_hip.y, l_hip.x],
+                                                               [l_ankle.y, l_ankle.x])
+
+            pushup_body_angle_r = PoseModel.calculate_body_angle([l_wrist.y, l_wrist.x],
+                                                               [l_hip.y, l_hip.x],
+                                                               [l_ankle.y, l_ankle.x])
+                                                               """
+
             self.draw.draw_landmarks(pose_frames, #frames to draw on
                                      process.pose_landmarks, #landmarks to draw, set to default
                                      self.connections, #chosen connections to draw(no face connections)
                                      self.draw.DrawingSpec((112, 112, 112), 2, 2), #pose landmark drawings
-                                     self.draw.DrawingSpec((0, 200, 50), 3, 3)) #pose connection drawings
+                                     self.draw.DrawingSpec((100, 200, 20), 2, 2)) #pose connection drawings
+        cv.rectangle(pose_frames, (0, 0), (200, 200), (90, 90, 90), -1)
+        cv.putText(pose_frames, 'Squat sesh', cv.FONT_HERSHEY_DUPLEX,
+                   [100, 50], 0.9, (40, 150, 10), cv.LINE_AA)
 
         return cv.cvtColor(pose_frames, cv.COLOR_RGB2BGR)
  
