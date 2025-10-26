@@ -31,7 +31,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
 
   // Initialize WebSocket connection
   useEffect(() => {
-    socketRef.current = io('http://localhost:5000/camera');
+    socketRef.current = io('http://localhost:5000/pushup_camera');
 
     socketRef.current.on('connect', () => {
       console.log('WebSocket connected');
@@ -96,7 +96,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
       setCameraStatus('starting');
       setError(null);
 
-      const response = await fetch('http://localhost:5000/camera/start', {
+      const response = await fetch('http://localhost:5000/pushup_camera/start', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
         handleStopStream();
       }
 
-      const response = await fetch('http://localhost:5000/camera/stop', {
+      const response = await fetch('http://localhost:5000/pushup_camera/stop', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

@@ -192,12 +192,12 @@ class CameraStatus(Resource):
 # Handle WebSocket connection
 @socketio.on('connect', namespace='/pushup_camera')
 def handle_connect():
-    print('[WEBSOCKET] Client connected to camera namespace')
+    print('[WEBSOCKET] Client connected to pushup camera namespace.')
 
 # Handle WebSocket disconnection
 @socketio.on('disconnect', namespace='/pushup_camera')
 def handle_disconnect():
-    print('[WEBSOCKET] Client disconnected from camera namespace')
+    print('[WEBSOCKET] Client disconnected from pushup camera namespace.')
 
     # Get the session ID of disconnected client
     session_id = request.sid
@@ -244,7 +244,7 @@ def handle_frame_request(data):
             return
 
         #interchanging regular frames with pushup frames
-        frame = camera.get_pushup_frame()
+        frame = camera.get_pushup_frames()
 
         if frame is None:
             socketio.emit('error', {'message': 'No frame available'}, namespace='/pushup_camera')
@@ -271,7 +271,7 @@ def stream_frames(user_id):
     camera = active_cameras[user_id]
 
     while camera.is_running() and active_streams.get(user_id, False):
-        frame = camera.get_jpeg_frame()
+        frame = camera.get_pushup_frames()
         if frame is None:
             continue
 
