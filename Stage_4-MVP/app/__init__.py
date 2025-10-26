@@ -95,7 +95,7 @@ def create_app():
 
     #added new namespaces. they replicate the original camera namespace for two different camera modes
     #they are inactive until called from front end
-    api.add_namespace(squat_camera_api, path='squat_camera')
+    api.add_namespace(squat_camera_api, path='/squat_camera')
     api.add_namespace(workout_api, path='/workout-results')
 
     # Test route for camera streaming

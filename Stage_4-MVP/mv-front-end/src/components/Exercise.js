@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import '../styles/Exercise.css';
+import '../styles/App.css';
 
 function Exercise({ exercise, onNavigate, onComplete }) {
   const [phase, setPhase] = useState('instructions');
@@ -9,25 +10,27 @@ function Exercise({ exercise, onNavigate, onComplete }) {
   const [reps, setReps] = useState(0);
   const [currentSet, setCurrentSet] = useState(1);
   const [formScore, setFormScore] = useState(0);
-  const [svmPrediction, setSvmPrediction] = useState(null);
-  const [angles, setAngles] = useState(null);
-  const [svmConfidence, setSvmConfidence] = useState(0);
   
   // WebSocket and Camera states
-  const [cameraStatus, setCameraStatus] = useState('stopped'); // stopped, starting, running
-  const [streamStatus, setStreamStatus] = useState('stopped'); // stopped, streaming
+  const [cameraStatus, setCameraStatus] = useState('stopped');
+  const [streamStatus, setStreamStatus] = useState('stopped');
   const [error, setError] = useState(null);
   
   const socketRef = useRef(null);
   const videoRef = useRef(null);
 
-  // Get user ID from localStorage (set during login)
+  // Get user ID from localStorage
   const userId = localStorage.getItem('user_id');
   const token = localStorage.getItem('token');
 
+  // Get exercise-specific class name
+  const getExerciseClassName = () => {
+    const exerciseName = exercise.name.toLowerCase().replace('-', '');
+    return exerciseName;
+  };
+
   // Initialize WebSocket connection
   useEffect(() => {
-    // Connect to WebSocket when component mounts
     socketRef.current = io('http://localhost:5000/camera');
 
     socketRef.current.on('connect', () => {
@@ -39,52 +42,27 @@ function Exercise({ exercise, onNavigate, onComplete }) {
       setStreamStatus('stopped');
     });
 
-    // Receive frames from server
     socketRef.current.on('frame', (data) => {
-      // Display video frame
       if (videoRef.current) {
         videoRef.current.src = 'data:image/jpeg;base64,' + data.image;
       }
-      
-      // Update SVM data if available
-      if (data.analysis) {
-        if (data.analysis.svm) {
-          setSvmPrediction(data.analysis.svm.prediction);
-          setSvmConfidence(data.analysis.svm.confidence);
-          
-          // Update form score based on SVM
-          if (data.analysis.svm.is_good_form) {
-            setFormScore(Math.min(100, 85 + Math.round(data.analysis.svm.confidence * 5)));
-          } else {
-            setFormScore(Math.max(0, 60 - Math.abs(Math.round(data.analysis.svm.confidence * 5))));
-          }
-        }
-        
-        if (data.analysis.angles) {
-          setAngles(data.analysis.angles);
-        }
-      }
     });
 
-    // Handle stream started event
     socketRef.current.on('stream_started', (data) => {
       console.log('Streaming started:', data);
       setStreamStatus('streaming');
     });
 
-    // Handle stream stopped event
     socketRef.current.on('stream_stopped', (data) => {
       console.log('Streaming stopped:', data);
       setStreamStatus('stopped');
     });
 
-    // Handle errors from server
     socketRef.current.on('error', (data) => {
       console.error('WebSocket error:', data.message);
       setError(data.message);
     });
 
-    // Cleanup on unmount
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
@@ -98,11 +76,9 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     if (isRecording) {
       interval = setInterval(() => {
         setRecordingTime(prev => prev + 1);
-        // Simulate rep counting (will be replaced with MediaPipe)
         if (recordingTime % 3 === 0 && recordingTime > 0) {
           setReps(prev => prev + 1);
         }
-        // Simulate form score (will be replaced with ML model)
         setFormScore(Math.floor(Math.random() * 20) + 75);
       }, 1000);
     }
@@ -115,7 +91,6 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Start camera on backend
   const handleStartCamera = async () => {
     try {
       setCameraStatus('starting');
@@ -128,9 +103,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          // source: 'http://192.168.0.8:4747/video' // Kevin IP address
-          source: 'http://192.168.0.6:8080/video' // Joe IP
-          // Change to source: 0 for laptop webcam
+          source: 'http://192.168.0.8:4747/video'
         })
       });
 
@@ -140,7 +113,6 @@ function Exercise({ exercise, onNavigate, onComplete }) {
         setCameraStatus('running');
         console.log('Camera started, FPS:', data.fps);
         
-        // Wait a moment for camera to capture first frames
         setTimeout(() => {
           handleStartStream();
         }, 1000);
@@ -153,10 +125,8 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     }
   };
 
-  // Stop camera on backend
   const handleStopCamera = async () => {
     try {
-      // Stop streaming first
       if (streamStatus === 'streaming') {
         handleStopStream();
       }
@@ -179,34 +149,12 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     }
   };
 
-  // Start WebSocket streaming
   const handleStartStream = () => {
-    console.log('🎬 Attempting to start stream...'); // ADD THIS
-    console.log('Socket:', socketRef.current);        // ADD THIS
-    console.log('User ID:', userId);                  // ADD THIS
-    
     if (socketRef.current && userId) {
-      // Detect exercise type for backend
-      let exerciseType = 'squat'; // default
-      if (exercise.name.toLowerCase().includes('push')) {
-        exerciseType = 'pushup';
-      } else if (exercise.name.toLowerCase().includes('squat')) {
-        exerciseType = 'squat';
-      } else if (exercise.name.toLowerCase().includes('sit')) {
-        exerciseType = 'squat'; // Treat sit-ups like squats for now (no SVM model yet)
-      }
-      console.log('🎬 Starting stream with exercise:', exerciseType); // ADD THIS
-      
-      socketRef.current.emit('start_stream', { 
-        user_id: userId,
-        exercise: exerciseType
-      });
-    } else {
-      console.error('❌ Cannot start stream - missing socket or userId'); // ADD THIS
+      socketRef.current.emit('start_stream', { user_id: userId });
     }
   };
 
-  // Stop WebSocket streaming
   const handleStopStream = () => {
     if (socketRef.current && userId) {
       socketRef.current.emit('stop_stream', { user_id: userId });
@@ -214,7 +162,6 @@ function Exercise({ exercise, onNavigate, onComplete }) {
   };
 
   const handleStartRecording = async () => {
-    // Start camera first
     await handleStartCamera();
     setPhase('recording');
     setIsRecording(true);
@@ -232,8 +179,6 @@ function Exercise({ exercise, onNavigate, onComplete }) {
 
   const handleStopRecording = async () => {
     setIsRecording(false);
-    
-    // Stop camera and streaming
     await handleStopCamera();
     
     const results = {
@@ -248,23 +193,24 @@ function Exercise({ exercise, onNavigate, onComplete }) {
 
   if (phase === 'instructions') {
     return (
-      <div>
+      <div className={`page-exercise ${getExerciseClassName()}`}>
         <header>
-          <button onClick={() => onNavigate('dashboard')}>← Back to Dashboard</button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
+            <h1>{exercise.name}</h1>
+            <button onClick={() => onNavigate('dashboard')}>← Back to Dashboard</button>
+          </div>
         </header>
 
-        <main>
-          <h2>{exercise.name}</h2>
-          
-          <section>
-            <h3>Exercise Overview</h3>
+        <main className="instructions-container">
+          <section className="glass-card">
+            <h2>Exercise Overview</h2>
             <p><strong>Duration:</strong> {exercise.duration}</p>
             <p><strong>Muscles Targeted:</strong> {exercise.muscles}</p>
-            <p><strong>Difficulty:</strong> {exercise.difficulty}</p>
+            <p><strong>Difficulty:</strong> <span className={`badge ${exercise.difficulty === 'Beginner' ? 'info' : 'warning'}`}>{exercise.difficulty}</span></p>
             <p>{exercise.description}</p>
           </section>
 
-          <section>
+          <section className="instructions-list">
             <h3>Step-by-Step Instructions</h3>
             <ol>
               <li>Position your body in the starting position with proper alignment</li>
@@ -275,7 +221,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
             </ol>
           </section>
 
-          <section>
+          <section className="instructions-list">
             <h3>Form Tips</h3>
             <ul>
               <li>Keep your movements smooth and controlled</li>
@@ -286,7 +232,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
             </ul>
           </section>
 
-          <section>
+          <section className="instructions-list">
             <h3>Common Mistakes to Avoid</h3>
             <ul>
               <li>Rushing through repetitions</li>
@@ -296,15 +242,17 @@ function Exercise({ exercise, onNavigate, onComplete }) {
             </ul>
           </section>
 
-          <button onClick={handleStartRecording}>
-            {cameraStatus === 'starting' ? 'Starting Camera...' : 'Start Recording'}
-          </button>
-          
-          {error && (
-            <div style={{ color: 'red', marginTop: '10px' }}>
-              Error: {error}
-            </div>
-          )}
+          <div className="start-button-container">
+            <button className="primary" onClick={handleStartRecording} disabled={cameraStatus === 'starting'}>
+              {cameraStatus === 'starting' ? 'Starting Camera...' : 'Start Recording'}
+            </button>
+            
+            {error && (
+              <div className="camera-error" style={{ marginTop: '1rem' }}>
+                {error}
+              </div>
+            )}
+          </div>
         </main>
       </div>
     );
@@ -312,117 +260,91 @@ function Exercise({ exercise, onNavigate, onComplete }) {
 
   if (phase === 'recording' || phase === 'paused') {
     return (
-      <div>
+      <div className={`page-exercise ${getExerciseClassName()}`}>
         <header>
-          <h2>{exercise.name}</h2>
-          <div>
-            <span>Recording Time: {formatTime(recordingTime)}</span>
-            {phase === 'paused' && <span> (PAUSED)</span>}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
+            <h1>{exercise.name}</h1>
+            <div className={`recording-timer ${phase === 'paused' ? 'paused' : ''}`}>
+              {formatTime(recordingTime)} {phase === 'paused' && '(PAUSED)'}
+            </div>
           </div>
         </header>
 
         <main>
-          <section>
-            <div>
+          <div className="recording-layout">
+            {/* Camera Feed */}
+            <div className="camera-section">
               <h3>Live Camera Feed</h3>
-              <div style={{
-                width: '100%',
-                maxWidth: '640px',
-                backgroundColor: '#000',
-                borderRadius: '8px',
-                overflow: 'hidden'
-              }}>
+              <div className="camera-feed-container">
                 <img 
                   ref={videoRef}
                   alt="Live camera feed"
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    display: 'block'
-                  }}
                 />
+                {streamStatus === 'streaming' && (
+                  <div className="live-indicator">LIVE</div>
+                )}
               </div>
               
-              {streamStatus === 'streaming' && (
-                <p style={{ color: 'green', fontWeight: 'bold' }}>
-                  🔴 LIVE
-                </p>
-              )}
-              
               {cameraStatus === 'starting' && (
-                <p>Starting camera...</p>
+                <div className="camera-status">Starting camera...</div>
               )}
               
               {error && (
-                <p style={{ color: 'red' }}>Error: {error}</p>
+                <div className="camera-error">{error}</div>
               )}
             </div>
-          </section>
 
-          <section>
-            <h3>Real-Time Metrics</h3>
-            <div>
-              <div>
+            {/* Metrics Sidebar */}
+            <div className="metrics-sidebar">
+              <div className="metric-box">
                 <h4>Reps</h4>
-                <p>{reps}</p>
+                <div className="value">{reps}</div>
               </div>
-              <div>
+
+              <div className="metric-box">
                 <h4>Current Set</h4>
-                <p>{currentSet}/3</p>
+                <div className="value">{currentSet}/3</div>
               </div>
-              <div>
+
+              <div className="metric-box">
                 <h4>Form Score</h4>
-                <p>{formScore}%</p>
+                <div className="value">{formScore}%</div>
+              </div>
+
+              {/* Form Feedback */}
+              <div className="form-feedback">
+                <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Form Feedback</h4>
+                {formScore >= 80 && (
+                  <div className="feedback-item excellent">
+                    ✓ Excellent form! Keep it up!
+                  </div>
+                )}
+                {formScore >= 60 && formScore < 80 && (
+                  <div className="feedback-item good">
+                    ⚠ Good, but watch your posture
+                  </div>
+                )}
+                {formScore < 60 && (
+                  <div className="feedback-item warning">
+                    ⚠ Adjust your form - keep your back straight
+                  </div>
+                )}
               </div>
             </div>
-          </section>
+          </div>
 
-          <section>
-            <h3>Form Feedback</h3>
-            <div>
-              {/* SVM Prediction */}
-              {svmPrediction === 'good' && (
-                <p style={{ color: 'green', fontSize: '1.2em', fontWeight: 'bold' }}>
-                  ✅ Good Form! (Confidence: {svmConfidence.toFixed(2)})
-                </p>
-              )}
-              {svmPrediction === 'bad' && (
-                <p style={{ color: 'orange', fontSize: '1.2em', fontWeight: 'bold' }}>
-                  ⚠️ Improve Form (Confidence: {Math.abs(svmConfidence).toFixed(2)})
-                </p>
-              )}
-              
-              {/* Angles Display */}
-              {angles && (
-                <div style={{ marginTop: '10px', fontSize: '0.9em' }}>
-                  <p><strong>Joint Angles:</strong></p>
-                  {angles.elbow && <p>Elbow: {angles.elbow}°</p>}
-                  {angles.body && <p>Body: {angles.body}°</p>}
-                  {angles.shoulder && <p>Shoulder: {angles.shoulder}°</p>}
-                  {angles.knee && <p>Knee: {angles.knee}°</p>}
-                  {angles.hip && <p>Hip: {angles.hip}°</p>}
-                  {angles.back && <p>Back: {angles.back}°</p>}
-                </div>
-              )}
-              
-              {/* Fallback if no SVM data yet */}
-              {!svmPrediction && (
-                <p>Analyzing form...</p>
-              )}
-            </div>
-          </section>
-
-          <section>
+          {/* Controls */}
+          <section className="controls-section">
             <h3>Controls</h3>
-            <div>
+            <div className="control-buttons">
               {phase === 'recording' && (
                 <button onClick={handlePauseRecording}>Pause</button>
               )}
               {phase === 'paused' && (
-                <button onClick={handleResumeRecording}>Resume</button>
+                <button className="primary" onClick={handleResumeRecording}>Resume</button>
               )}
               <button onClick={handleStopRecording}>Stop & Review</button>
-              <button onClick={() => setCurrentSet(prev => prev + 1)}>Next Set</button>
+              <button onClick={() => setCurrentSet(prev => prev + 1)}>Next Set ({currentSet}/3)</button>
             </div>
           </section>
         </main>

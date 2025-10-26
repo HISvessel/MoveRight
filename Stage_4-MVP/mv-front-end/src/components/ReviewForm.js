@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { reviewAPI } from '../services/api';
 import '../styles/ReviewForm.css';
+import '../styles/App.css';
 
 function ReviewForm({ user, onNavigate }) {
   const [formData, setFormData] = useState({
@@ -61,16 +62,13 @@ function ReviewForm({ user, onNavigate }) {
 
     setIsLoading(true);
     
-    // TODO: Replace with actual API call to backend
     try {
-      // Call Flask backend to create review
       await reviewAPI.create({
         title: formData.title,
         comment: formData.comment,
         rating: formData.rating
       });
       
-      // Note: user_id is automatically added by Flask from JWT token
       setSubmitted(true);
       
     } catch (error) {
@@ -82,92 +80,97 @@ function ReviewForm({ user, onNavigate }) {
 
   if (submitted) {
     return (
-      <div>
+      <div className="page-review">
         <header>
-          <h1>Thank You!</h1>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
+            <h1>Thank You!</h1>
+          </div>
         </header>
 
-        <main>
-          <section>
+        <main className="review-container">
+          <div className="success-container glass-card">
             <h2>Your review has been submitted successfully</h2>
             <p>We appreciate your feedback and will use it to improve MoveRight for everyone.</p>
-            <button onClick={() => onNavigate('dashboard')}>Return to Dashboard</button>
-          </section>
+            <button className="primary" onClick={() => onNavigate('dashboard')}>Return to Dashboard</button>
+          </div>
         </main>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="page-review">
       <header>
-        <h1>Leave a Review</h1>
-        <nav>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
+          <h1>Leave a Review</h1>
           <button onClick={() => onNavigate('dashboard')}>← Back to Dashboard</button>
-        </nav>
+        </div>
       </header>
 
-      <main>
-        <section>
+      <main className="review-container">
+        <section className="glass-card">
           <h2>Share Your Experience</h2>
           <p>Help other users by sharing your thoughts about MoveRight</p>
         </section>
 
-        <form onSubmit={handleSubmit}>
-          {errors.general && <div>{errors.general}</div>}
-          
-          <div>
-            <label>Rating</label>
+        <div className="review-card">
+          <form onSubmit={handleSubmit}>
+            {errors.general && <div className="general-error">{errors.general}</div>}
+            
             <div>
-              {[1, 2, 3, 4, 5].map(star => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => handleRatingChange(star)}
-                  disabled={isLoading}
-                >
-                  {star <= formData.rating ? '★' : '☆'}
-                </button>
-              ))}
+              <label>Rating</label>
+              <div className="star-rating">
+                {[1, 2, 3, 4, 5].map(star => (
+                  <button
+                    key={star}
+                    type="button"
+                    className={`star-button ${star <= formData.rating ? 'filled' : ''}`}
+                    onClick={() => handleRatingChange(star)}
+                    disabled={isLoading}
+                  >
+                    {star <= formData.rating ? '★' : '☆'}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label htmlFor="title">Review Title</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Summarize your experience"
-              disabled={isLoading}
-            />
-            {errors.title && <span>{errors.title}</span>}
-          </div>
+            <div>
+              <label htmlFor="title">Review Title</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="Summarize your experience"
+                disabled={isLoading}
+              />
+              {errors.title && <span className="error">{errors.title}</span>}
+            </div>
 
-          <div>
-            <label htmlFor="comment">Your Review</label>
-            <textarea
-              id="comment"
-              name="comment"
-              value={formData.comment}
-              onChange={handleChange}
-              placeholder="Tell us about your experience with MoveRight..."
-              rows="6"
-              disabled={isLoading}
-            />
-            {errors.comment && <span>{errors.comment}</span>}
-          </div>
+            <div>
+              <label htmlFor="comment">Your Review</label>
+              <textarea
+                id="comment"
+                name="comment"
+                value={formData.comment}
+                onChange={handleChange}
+                placeholder="Tell us about your experience with MoveRight..."
+                rows="6"
+                disabled={isLoading}
+              />
+              {errors.comment && <span className="error">{errors.comment}</span>}
+            </div>
 
-          <div>
-            <p>Posting as: {user.first_name} {user.last_name}</p>
-          </div>
+            <div className="posting-as">
+              <p>Posting as: {user.first_name} {user.last_name}</p>
+            </div>
 
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? 'Submitting...' : 'Submit Review'}
-          </button>
-        </form>
+            <button type="submit" className="primary" disabled={isLoading}>
+              {isLoading ? 'Submitting...' : 'Submit Review'}
+            </button>
+          </form>
+        </div>
       </main>
     </div>
   );

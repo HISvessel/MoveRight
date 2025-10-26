@@ -1,40 +1,17 @@
-.results-page {
-  max-width: 900px;
-  margin: 0 auto;
+.page-results {
+  min-height: 100vh;
+  position: relative;
 }
 
-.results-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.performance-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  margin: 2rem 0;
-}
-
-.analysis-section {
-  margin: 2rem 0;
-  padding: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.next-exercises {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-@media (max-width: 768px) {
-  .performance-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .next-exercises {
-    grid-template-columns: 1fr;
-  }
+.page-results::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(135deg, rgba(15, 15, 15, 0.93) 0%, rgba(15, 15, 15, 0.85) 100%),
+    url('../assets/logo2.jpeg') center/cover no-repeat;
+  z-index: -1;
 }

@@ -30,48 +30,52 @@ function UserReviews() {
 
   if (isLoading) {
     return (
-      <section>
+      <div className="reviews-container">
         <h3>What Our Users Say</h3>
-        <p>Loading reviews...</p>
-      </section>
+        <div className="reviews-loading">Loading reviews...</div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <section>
+      <div className="reviews-container">
         <h3>What Our Users Say</h3>
-        <p>{error}</p>
-      </section>
+        <div className="reviews-error">{error}</div>
+      </div>
     );
   }
 
   if (reviews.length === 0) {
     return (
-      <section>
+      <div className="reviews-container">
         <h3>What Our Users Say</h3>
-        <p>No reviews yet. Be the first to share your experience!</p>
-      </section>
+        <div className="reviews-empty">No reviews yet. Be the first to share your experience!</div>
+      </div>
     );
   }
 
   return (
-    <section>
+    <div className="reviews-container">
       <h3>What Our Users Say</h3>
-      <div>
+      <div className="reviews-grid">
         {reviews.map(review => (
-          <div key={review.id}>
-            <div>
-              <h4>{review.user_name || 'Anonymous'}</h4>
-              <div>{renderStars(review.rating)}</div>
-              <p>{new Date(review.created_at).toLocaleDateString()}</p>
+          <div key={review.id} className="review-card">
+            <div className="review-header">
+              <div className="review-user-info">
+                <h4>{review.user_name || 'Anonymous'}</h4>
+                <div className="review-stars">{renderStars(review.rating)}</div>
+              </div>
+              <div className="review-date">
+                {new Date(review.created_at).toLocaleDateString()}
+              </div>
             </div>
-            <h5>{review.title}</h5>
-            <p>{review.comment}</p>
+            <h5 className="review-title">{review.title}</h5>
+            <p className="review-comment">{review.comment}</p>
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
 

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { userAPI } from '../services/api';
 import '../styles/Account.css';
+import '../styles/App.css';
+import accountBg from '../assets/logo2.jpeg';
 
 function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   console.log('User object:', user);
@@ -20,6 +22,48 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [workoutStats, setWorkoutStats] = useState({
+    totalWorkouts: 0,
+    totalMinutes: 0,
+    avgFormScore: 0
+  });
+  const [activityHistory, setActivityHistory] = useState([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+
+  useEffect(() => {
+    // Fetch user workout stats and history
+    const fetchWorkoutData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        
+        // TODO: Replace with actual API calls
+        // const statsResponse = await fetch('http://localhost:5000/api/workouts/stats', {
+        //   headers: { 'Authorization': `Bearer ${token}` }
+        // });
+        // const statsData = await statsResponse.json();
+        // setWorkoutStats(statsData);
+
+        // const historyResponse = await fetch('http://localhost:5000/api/workouts/history', {
+        //   headers: { 'Authorization': `Bearer ${token}` }
+        // });
+        // const historyData = await historyResponse.json();
+        // setActivityHistory(historyData);
+
+        setIsLoadingHistory(false);
+      } catch (error) {
+        console.error('Error fetching workout data:', error);
+        setIsLoadingHistory(false);
+      }
+    };
+
+    fetchWorkoutData();
+  }, []);
+
+  const getFormScoreBadge = (score) => {
+    if (score >= 90) return 'success';
+    if (score >= 75) return 'info';
+    return 'warning';
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,18 +82,15 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   const validateProfileForm = () => {
     const newErrors = {};
 
-    // Name & email
     if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
     if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
     if (!formData.email) newErrors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
 
-    // Age
     const age = parseInt(formData.age);
     if (!formData.age) newErrors.age = 'Age is required';
     else if (isNaN(age) || age <= 0) newErrors.age = 'Age must be a positive number';
 
-    // Height
     const feet = parseInt(formData.feet);
     const inches = parseInt(formData.inches);
     if (!formData.feet) newErrors.feet = 'Height (feet) is required';
@@ -57,14 +98,12 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
     if (!formData.inches && formData.inches !== 0) newErrors.inches = 'Height (inches) is required';
     else if (isNaN(inches) || inches < 0 || inches > 11) newErrors.inches = 'Height (inches) must be 0–11';
 
-    // Weight
     const weight = parseFloat(formData.weight);
     if (!formData.weight) newErrors.weight = 'Weight is required';
     else if (isNaN(weight) || weight <= 0) newErrors.weight = 'Weight must be positive';
 
     return newErrors;
   };
-
 
   const validatePasswordForm = () => {
     const newErrors = {};
@@ -127,7 +166,6 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
       }));
       setIsLoading(false);
       
-      
     } catch (error) {
       setErrors({ general: 'Update failed. Please try again.' });
       setIsLoading(false);
@@ -148,7 +186,6 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
     } catch (error) {
       alert('Failed to delete account. Please try again.');
     }
-
   };
 
   const memberSinceDate = new Date(user.created_at).toLocaleDateString('en-US', {
@@ -158,22 +195,37 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   });
 
   return (
-    <div>
+    <div 
+      className="page-account"
+      style={{
+        backgroundImage: `linear-gradient(135deg, rgba(15, 15, 15, 0.93) 0%, rgba(15, 15, 15, 0.85) 100%), url(${accountBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        minHeight: '100vh'
+      }}
+    >
       <header>
-        <h1>Account Settings</h1>
-        <nav>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
+          <h1>Account Settings</h1>
           <button onClick={() => onNavigate('dashboard')}>← Back to Dashboard</button>
-        </nav>
+        </div>
       </header>
 
       <main>
         {successMessage && (
-          <div>
-            <p>{successMessage}</p>
+          <div style={{ 
+            color: 'var(--accent-green)', 
+            marginBottom: '2rem', 
+            padding: '1rem', 
+            background: 'rgba(164, 255, 0, 0.1)', 
+            borderRadius: '8px' 
+          }}>
+            ✓ {successMessage}
           </div>
         )}
 
-        <section>
+        <section className="glass-card">
           <h2>Profile Information</h2>
           
           {!isEditing ? (
@@ -185,13 +237,24 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                 <p><strong>Email:</strong> {user.email}</p>
               </div>
               <div>
+                <p><strong>Age:</strong> {user.age}</p>
+              </div>
+              <div>
+                <p><strong>Height:</strong> {user.height}</p>
+              </div>
+              <div>
+                <p><strong>Weight:</strong> {user.weight} lbs</p>
+              </div>
+              <div>
                 <p><strong>Member Since:</strong> {memberSinceDate}</p>
               </div>
-              <button onClick={() => setIsEditing(true)}>Edit Profile</button>
+              <button onClick={() => setIsEditing(true)} style={{ marginTop: '1rem' }}>
+                Edit Profile
+              </button>
             </div>
           ) : (
-            <form onSubmit={handleUpdateProfile}>
-              {errors.general && <div>{errors.general}</div>}
+            <div>
+              {errors.general && <div className="error">{errors.general}</div>}
               
               <div>
                 <label htmlFor="firstName">First Name</label>
@@ -203,7 +266,7 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   onChange={handleChange}
                   disabled={isLoading}
                 />
-                {errors.firstName && <span>{errors.firstName}</span>}
+                {errors.firstName && <span className="error">{errors.firstName}</span>}
               </div>
 
               <div>
@@ -216,7 +279,7 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   onChange={handleChange}
                   disabled={isLoading}
                 />
-                {errors.lastName && <span>{errors.lastName}</span>}
+                {errors.lastName && <span className="error">{errors.lastName}</span>}
               </div>
 
               <div>
@@ -229,7 +292,7 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   onChange={handleChange}
                   disabled={isLoading}
                 />
-                {errors.email && <span>{errors.email}</span>}
+                {errors.email && <span className="error">{errors.email}</span>}
               </div>
               
               <div>
@@ -242,37 +305,39 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   onChange={handleChange}
                   disabled={isLoading}
                 />
-                {errors.age && <span>{errors.age}</span>}
+                {errors.age && <span className="error">{errors.age}</span>}
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label htmlFor="feet">Height (Feet)</label>
+                  <input
+                    type="number"
+                    id="feet"
+                    name="feet"
+                    value={formData.feet || ''}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                  {errors.feet && <span className="error">{errors.feet}</span>}
+                </div>
+
+                <div>
+                  <label htmlFor="inches">Height (Inches)</label>
+                  <input
+                    type="number"
+                    id="inches"
+                    name="inches"
+                    value={formData.inches || ''}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                  {errors.inches && <span className="error">{errors.inches}</span>}
+                </div>
               </div>
 
               <div>
-                <label htmlFor="feet">Height (Feet)</label>
-                <input
-                  type="number"
-                  id="feet"
-                  name="feet"
-                  value={formData.feet || ''}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                />
-                {errors.feet && <span>{errors.feet}</span>}
-              </div>
-
-              <div>
-                <label htmlFor="inches">Height (Inches)</label>
-                <input
-                  type="number"
-                  id="inches"
-                  name="inches"
-                  value={formData.inches || ''}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                />
-                {errors.inches && <span>{errors.inches}</span>}
-              </div>
-
-              <div>
-                <label htmlFor="weight">Weight</label>
+                <label htmlFor="weight">Weight (lbs)</label>
                 <input
                   type="number"
                   id="weight"
@@ -281,10 +346,10 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   onChange={handleChange}
                   disabled={isLoading}
                 />
-                {errors.weight && <span>{errors.weight}</span>}
+                {errors.weight && <span className="error">{errors.weight}</span>}
               </div>
 
-              <h3>Change Password (Optional)</h3>
+              <h3 style={{ marginTop: '2rem' }}>Change Password (Optional)</h3>
               
               <div>
                 <label htmlFor="currentPassword">Current Password</label>
@@ -296,7 +361,7 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   onChange={handleChange}
                   disabled={isLoading}
                 />
-                {errors.currentPassword && <span>{errors.currentPassword}</span>}
+                {errors.currentPassword && <span className="error">{errors.currentPassword}</span>}
               </div>
 
               <div>
@@ -309,7 +374,7 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   onChange={handleChange}
                   disabled={isLoading}
                 />
-                {errors.newPassword && <span>{errors.newPassword}</span>}
+                {errors.newPassword && <span className="error">{errors.newPassword}</span>}
               </div>
 
               <div>
@@ -322,72 +387,128 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
                   onChange={handleChange}
                   disabled={isLoading}
                 />
-                {errors.confirmNewPassword && <span>{errors.confirmNewPassword}</span>}
+                {errors.confirmNewPassword && <span className="error">{errors.confirmNewPassword}</span>}
               </div>
 
-              <div>
-                <button type="submit" disabled={isLoading}>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                <button 
+                  type="button" 
+                  onClick={handleUpdateProfile} 
+                  className="primary" 
+                  disabled={isLoading}
+                >
                   {isLoading ? 'Saving...' : 'Save Changes'}
                 </button>
-                <button type="button" onClick={() => setIsEditing(false)} disabled={isLoading}>
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditing(false)} 
+                  disabled={isLoading}
+                >
                   Cancel
                 </button>
               </div>
-            </form>
+            </div>
           )}
         </section>
 
-        <section>
-          <h2>Workout Statistics</h2>
-          <div>
-            <div>
-              <h3>Total Workouts</h3>
-              <p>24</p>
+        {/* Stats Section */}
+        <section className="grid-3">
+          <div className="metric-card">
+            <div className="metric-value">{workoutStats.totalWorkouts}</div>
+            <div className="metric-label">Total Workouts</div>
+          </div>
+          <div className="metric-card">
+            <div className="metric-value">{workoutStats.totalMinutes}</div>
+            <div className="metric-label">Total Minutes</div>
+          </div>
+          <div className="metric-card">
+            <div className="metric-value">
+              {workoutStats.avgFormScore > 0 ? `${workoutStats.avgFormScore}%` : '—'}
             </div>
-            <div>
-              <h3>Total Minutes</h3>
-              <p>480</p>
-            </div>
-            <div>
-              <h3>Average Form Score</h3>
-              <p>85%</p>
-            </div>
-            <div>
-              <h3>Current Streak</h3>
-              <p>5 days</p>
-            </div>
+            <div className="metric-label">Avg Form Score</div>
           </div>
         </section>
 
+        {/* Activity History Table */}
         <section>
+          <h3 style={{ marginBottom: '1.5rem' }}>Workout History</h3>
+          {isLoadingHistory ? (
+            <div className="glass-card" style={{ textAlign: 'center', padding: '3rem' }}>
+              <p>Loading workout history...</p>
+            </div>
+          ) : activityHistory.length > 0 ? (
+            <table className="activity-table">
+              <thead>
+                <tr>
+                  <th>Exercise</th>
+                  <th>Date</th>
+                  <th>Duration</th>
+                  <th>Reps</th>
+                  <th>Sets</th>
+                  <th>Form Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {activityHistory.map(activity => (
+                  <tr key={activity.id}>
+                    <td style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
+                      {activity.exercise}
+                    </td>
+                    <td>{new Date(activity.date).toLocaleDateString()}</td>
+                    <td>{activity.duration}</td>
+                    <td>{activity.reps}</td>
+                    <td>{activity.sets}</td>
+                    <td>
+                      <span className={`badge ${getFormScoreBadge(activity.formScore)}`}>
+                        {activity.formScore}%
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="glass-card" style={{ textAlign: 'center', padding: '3rem' }}>
+              <h4 style={{ marginBottom: '1rem' }}>No workout history yet</h4>
+              <p style={{ color: 'var(--text-secondary)' }}>
+                Complete your first workout to see your history here!
+              </p>
+            </div>
+          )}
+        </section>
+
+        <section className="glass-card">
           <h2>Preferences</h2>
-          <div>
-            <div>
-              <label>
-                <input type="checkbox" defaultChecked />
-                Email notifications for workout reminders
-              </label>
-            </div>
-            <div>
-              <label>
-                <input type="checkbox" defaultChecked />
-                Weekly progress reports
-              </label>
-            </div>
-            <div>
-              <label>
-                <input type="checkbox" />
-                Share my progress on social media
-              </label>
-            </div>
+          <div className="checkbox-group">
+            <label className="checkbox-label">
+              <input type="checkbox" defaultChecked />
+              <span>Email notifications for workout reminders</span>
+            </label>
+            <label className="checkbox-label">
+              <input type="checkbox" defaultChecked />
+              <span>Weekly progress reports</span>
+            </label>
+            <label className="checkbox-label">
+              <input type="checkbox" />
+              <span>Share my progress on social media</span>
+            </label>
           </div>
         </section>
 
-        <section>
+        <section className="danger-zone">
           <h2>Danger Zone</h2>
           <div>
             <p>Once you delete your account, there is no going back. Please be certain.</p>
-            <button onClick={handleDeleteAccount}>Delete Account</button>
+            <button 
+              onClick={handleDeleteAccount} 
+              style={{ 
+                marginTop: '1rem', 
+                background: 'var(--accent-red)', 
+                border: 'none' 
+              }}
+            >
+              Delete Account
+            </button>
           </div>
         </section>
       </main>

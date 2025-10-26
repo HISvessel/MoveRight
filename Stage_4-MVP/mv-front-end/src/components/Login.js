@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { authAPI } from '../services/api';
 import '../styles/Login.css';
+import '../styles/App.css';
 
 function Login({ onNavigate, onLoginSuccess }) {
   const [formData, setFormData] = useState({
@@ -52,77 +53,77 @@ function Login({ onNavigate, onLoginSuccess }) {
 
     setIsLoading(true);
     
-    // API call
     try {
-      // Call Flask backend
       const data = await authAPI.login(formData.email, formData.password);
-      
-      // Save JWT token to localStorage
       localStorage.setItem('token', data.token);
       localStorage.setItem('user_id', data.user.id);
-      // Pass user data to parent component
       onLoginSuccess(data.user);
       
     } catch (error) {
-      // Handle login error
       setErrors({ general: error.message || 'Login failed. Please check your credentials.' });
     } finally {
-      // Always stop loading, whether success or error
       setIsLoading(false);
     }
   };
 
   const handleForgotPassword = () => {
-    // TODO: Implement forgot password functionality
     alert('Forgot password functionality coming soon!');
   };
 
   return (
-    <div>
-      <h2>Welcome Back</h2>
-      
-      <form onSubmit={handleSubmit}>
-        {errors.general && <div>{errors.general}</div>}
-        
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            disabled={isLoading}
-          />
-          {errors.email && <span>{errors.email}</span>}
+    <div className="page-login">
+      <div className="login-container">
+        <div className="login-card">
+          <h2>Welcome Back</h2>
+          
+          <form onSubmit={handleSubmit}>
+            {errors.general && <div className="general-error">{errors.general}</div>}
+            
+            <div>
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                disabled={isLoading}
+              />
+              {errors.email && <span className="error">{errors.email}</span>}
+            </div>
+
+            <div>
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                disabled={isLoading}
+              />
+              {errors.password && <span className="error">{errors.password}</span>}
+            </div>
+
+            <button 
+              type="button" 
+              className="forgot-password-btn"
+              onClick={handleForgotPassword}
+            >
+              Forgot Password?
+            </button>
+
+            <button type="submit" className="primary" disabled={isLoading}>
+              {isLoading ? 'Logging In...' : 'Log In'}
+            </button>
+          </form>
+
+          <p>
+            Don't have an account?{' '}
+            <button onClick={() => onNavigate('signup')}>Sign Up</button>
+          </p>
         </div>
-
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            disabled={isLoading}
-          />
-          {errors.password && <span>{errors.password}</span>}
-        </div>
-
-        <button type="button" onClick={handleForgotPassword}>
-          Forgot Password?
-        </button>
-
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Logging In...' : 'Log In'}
-        </button>
-      </form>
-
-      <p>
-        Don't have an account?{' '}
-        <button onClick={() => onNavigate('signup')}>Sign Up</button>
-      </p>
+      </div>
     </div>
   );
 }
