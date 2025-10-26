@@ -10,8 +10,11 @@ function Exercise({ exercise, onNavigate, onComplete }) {
   const [reps, setReps] = useState(0);
   const [currentSet, setCurrentSet] = useState(1);
   const [formScore, setFormScore] = useState(0);
+  const [svmPrediction, setSVMPrediction] = useState(null);
+  const [angles, setAngles] = useState(null);
+  const [svmConfidence, setSVMConfidence] = useState(0);
   
-  // WebSocket and Camera states
+  // WebSocket and Camera state
   const [cameraStatus, setCameraStatus] = useState('stopped');
   const [streamStatus, setStreamStatus] = useState('stopped');
   const [error, setError] = useState(null);
@@ -31,7 +34,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
 
   // Initialize WebSocket connection
   useEffect(() => {
-    socketRef.current = io('http://localhost:5000/pushup_camera');
+    socketRef.current = io('http://localhost:5000/camera');
 
     socketRef.current.on('connect', () => {
       console.log('WebSocket connected');
@@ -45,6 +48,22 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     socketRef.current.on('frame', (data) => {
       if (videoRef.current) {
         videoRef.current.src = 'data:image/jpeg;base64,' + data.image;
+      }
+      if (data.analysis) {
+	if (data.analysis.svm) {
+	  setSVMPrediction(data.analysis.svm.predition);
+	  setSVMConfidence(data.analysis.svm.confidence);
+	  
+	  if (data.analysis.svm.is_good_form) {
+	    setFormScore(Math.min(100, 85 + Math.round(data.analysis.svm.confidence * 5)));
+	  } else {
+	    setFormScore(Math.min(0, 60 - Math.abs(Math.round(data.analysis.svm.confidence * 5))));
+	  }
+	}
+
+	if (data.analysis.angle) {
+	    setAngles(data.analysis.angles);
+	}
       }
     });
 
@@ -96,7 +115,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
       setCameraStatus('starting');
       setError(null);
 
-      const response = await fetch('http://localhost:5000/pushup_camera/start', {
+      const response = await fetch('http://localhost:5000/camera/start', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +150,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
         handleStopStream();
       }
 
-      const response = await fetch('http://localhost:5000/pushup_camera/stop', {
+      const response = await fetch('http://localhost:5000/camera/stop', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -150,8 +169,22 @@ function Exercise({ exercise, onNavigate, onComplete }) {
   };
 
   const handleStartStream = () => {
+    console.log('Starting stream.');
+
     if (socketRef.current && userId) {
-      socketRef.current.emit('start_stream', { user_id: userId });
+      let exerciseType = 'squat'; //default to squat, but why?
+      if (exercise.name.toLowerCase().includes('push')) {
+	exerciseType = 'pushup';
+      } else if (exrcise.name.toLowerCase().includes('squat')) {
+	exerciseType = 'squat';
+      }
+      console.log(`Starting stream with ${exerciseType}`);
+      socketRef.current.emit('start_stream', { 
+	user_id: userId,
+      	exercise: exerciseType
+      });
+    } else {
+      console.error('Cannot start stream - payload data missing.');
     }
   };
 
@@ -314,21 +347,26 @@ function Exercise({ exercise, onNavigate, onComplete }) {
               {/* Form Feedback */}
               <div className="form-feedback">
                 <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Form Feedback</h4>
-                {formScore >= 80 && (
+                {svmPrediction === 'good' && (
                   <div className="feedback-item excellent">
-                    ✓ Excellent form! Keep it up!
+                    ✓ Excellent form! (Confidence: {svmConfidence.toFixed(2)})
                   </div>
                 )}
-                {formScore >= 60 && formScore < 80 && (
-                  <div className="feedback-item good">
-                    ⚠ Good, but watch your posture
-                  </div>
-                )}
-                {formScore < 60 && (
+
+                {svmPrediction === 'bad' && (
                   <div className="feedback-item warning">
-                    ⚠ Adjust your form - keep your back straight
+                    ⚠ Adjust your form (Confidence : {Math.abs(svmConfidence).toFixed(2)})
                   </div>
                 )}
+	    	{angles && (
+		<div style={{ margintTop: '1rem', color: 'var(--text-primary)'}}>
+		  <p><strong>Joint Angles</strong></p>
+		  {angles.elbow && <p>Elbow: {angles.elbow} degrees </p>
+		  {angles.body && <p>Body: {angles.body} degrees</p>}
+		  {angles.shoulder && <p>Shoulder: {angles.shoulder} degrees</p>
+		  {angles.knee && <p>Knee: {angles.knee} degrees</p>}
+		  {angles.hip && <p>Hip: {angle.hip} degrees</p>}
+		  {angles.body && <p>Body: {angle.body} degrees</p>)}
               </div>
             </div>
           </div>
