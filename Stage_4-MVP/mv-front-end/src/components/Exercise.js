@@ -361,16 +361,17 @@ function Exercise({ exercise, onNavigate, onComplete }) {
 	    	{angles && (
 		<div style={{ margintTop: '1rem', color: 'var(--text-primary)'}}>
 		  <p><strong>Joint Angles</strong></p>
-		  {angles.elbow && <p>Elbow: {angles.elbow} degrees </p>
+		  {angles.elbow && <p>Elbow: {angles.elbow} degrees </p>}
 		  {angles.body && <p>Body: {angles.body} degrees</p>}
-		  {angles.shoulder && <p>Shoulder: {angles.shoulder} degrees</p>
+		  {angles.shoulder && <p>Shoulder: {angles.shoulder} degrees</p>}
 		  {angles.knee && <p>Knee: {angles.knee} degrees</p>}
 		  {angles.hip && <p>Hip: {angle.hip} degrees</p>}
-		  {angles.body && <p>Body: {angle.body} degrees</p>)}
+		  {angles.body && <p>Body: {angle.body} degrees</p>}
+		)}
               </div>
             </div>
           </div>
-
+	</div>
           {/* Controls */}
           <section className="controls-section">
             <h3>Controls</h3>
