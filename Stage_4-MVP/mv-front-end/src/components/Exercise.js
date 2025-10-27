@@ -122,7 +122,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          source: 'http://192.168.0.8:4747/video'
+          source: 'http://192.168.9.176:4747/video'
         })
       });
 

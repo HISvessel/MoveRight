@@ -61,10 +61,10 @@ class PoseModel():
                                      process.pose_landmarks, #landmarks to draw, set to default
                                      self.connections, #chosen connections to draw(no face connections)
                                      self.draw.DrawingSpec((112, 112, 112), 3, 3), #pose landmark drawings
-                                     self.draw.DrawingSpec((100, 200, 20), 2, 2)) #pose connection drawings
-        cv.rectangle(pose_frames, (0, 0), (200, 400), (90, 150, 90), -1)
-        cv.putText(pose_frames, 'Regular sesh(no math)', (100, 50),
-                   cv.FONT_HERSHEY_SIMPLEX, 0.9, (25, 150, 10), 1)
+                                     self.draw.DrawingSpec((100, 200, 20), 4, 4)) #pose connection drawings
+        cv.rectangle(pose_frames, (0, 0), (250, 100), (70, 70, 70), -1)
+        cv.putText(pose_frames, 'Exercise session', (100, 50),
+                   cv.FONT_HERSHEY_SIMPLEX, 1, (25, 150, 10), 2)
         return cv.cvtColor(pose_frames, cv.COLOR_RGB2BGR)
 
     def draw_pushup_pose(self, frames):
@@ -124,7 +124,7 @@ class PoseModel():
                               process.pose_landmarks, #landmarks to draw, set to default
                                      self.connections, #chosen connections to draw(no face connections)
                                      self.draw.DrawingSpec((112, 112, 112), 2, 2), #pose landmark drawings
-                                     self.draw.DrawingSpec((100, 200, 20), 2, 2)) #pose connection drawings
+                                     self.draw.DrawingSpec((100, 200, 20), 4, 4)) #pose connection drawings
 
         return cv.cvtColor(pose_frames, cv.COLOR_RGB2BGR)
 
@@ -184,7 +184,7 @@ class PoseModel():
                                      self.connections, #chosen connections to draw(no face connections)
                                      self.draw.DrawingSpec((112, 112, 112), 2, 2), #pose landmark drawings
                                      self.draw.DrawingSpec((100, 200, 20), 2, 2)) #pose connection drawings
-        cv.rectangle(pose_frames, (0, 0), (200, 200), (90, 90, 90), -1)
+        cv.rectangle(pose_frames, (0, 0), (200, 100), (90, 90, 90), -1)
         cv.putText(pose_frames, 'Squat sesh', (100, 50), cv.FONT_HERSHEY_SIMLEX,
                    0.9, (40, 150, 10), 1)
 

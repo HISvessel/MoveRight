@@ -38,7 +38,7 @@ except:
 # Camera start input model
 camera_start_input = camera_api.model('CameraStart', {
     'source': fields.String(description='Camera source', 
-                           example='http://192.168.0.8:4747/video')
+                           example='http://192.168.9.176:4747/video')
 })
 
 # Camera response model
@@ -145,6 +145,7 @@ class CameraStart(Resource):
             }, 200
 
         except Exception as e:
+            camera.stop() #///////////////////
             return {
                 'status': 'error',
                 'message': f'Failed to start camera: {str(e)}'
