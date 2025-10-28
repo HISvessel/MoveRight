@@ -6,23 +6,20 @@ class VideoSource:
     @staticmethod
     def find_source():
         """
-        Intelligently searches for a working video source.
+        Intelligently searches for a working *local* video source.
         
         Tries in order:
-        1. IP Webcam stream (if available)
-        2. Default webcam (index 0)
-        3. Secondary cameras (index 1, 2)
+        1. Default webcam (index 0)
+        2. Secondary cameras (index 1, 2)
         
         Returns:
-            Working source (int or str), or None if nothing found
+            Working source (int), or None if nothing found
         """
-        # UPDATE THIS with IP Webcam URL
-        ip_source1 = 'http://192.168.0.8:4747/video' #Kevin IP
-        ip_source2 = 'http://192.168.0.6:8080/video' #Joe IP
+        # Removed all hardcoded IP sources.
+        # This function will only find local system cameras.
+        sources_to_try = [0, 1, 2] 
         
-        sources_to_try = [ip_source1, ip_source2, 0, 1, 2]
-        
-        print("[VideoSource] Searching for video source...")
+        print("[VideoSource] Searching for local video source...")
         
         for source in sources_to_try:
             print(f"[VideoSource] Trying: {source}")
@@ -30,17 +27,17 @@ class VideoSource:
             cap = cv2.VideoCapture(source)
             
             if cap.isOpened():
-                # Try to read a frame to make sure it's really working
+                # Try to read a frame to make sure it's working
                 success, frame = cap.read()
                 cap.release()
                 
                 if success and frame is not None:
-                    print(f"[VideoSource] ✅ Success! Using: {source}")
+                    print(f"[VideoSource] ✅ Success! Using local: {source}")
                     return source
                 else:
                     print(f"[VideoSource] ❌ Opened but no frames from: {source}")
             else:
                 print(f"[VideoSource] ❌ Failed to open: {source}")
         
-        print("[VideoSource] ⚠️ No working source found!")
+        print("[VideoSource] 🛑 No working local video source detected.")
         return None

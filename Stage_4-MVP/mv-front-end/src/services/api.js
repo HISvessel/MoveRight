@@ -120,9 +120,10 @@ export const reviewAPI = {
 // Camera API
 export const cameraAPI = {
   start: async (source) => {
+    const body = source ? { source } : {};
     return apiRequest('/camera/start', {
       method: 'POST',
-      body: JSON.stringify({ source }),
+      body: JSON.stringify(body),
     });
   },
 

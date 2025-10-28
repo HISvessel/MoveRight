@@ -22,7 +22,7 @@ class Camera:
     Provides frames for real-time streaming via WebSocket.
     """
 
-    def __init__(self, source=0, user_id=None):
+    def __init__(self, source=None, user_id=None):
         """
         Initialize camera with video source.
 
@@ -31,9 +31,10 @@ class Camera:
             user_id: Optional user ID to associate recordings with a user
         """
         if source is None:
+            print("[CAMERA] No source provided, attempting to auto-find local webcam...")
             source = VideoSource.find_source()
             if source is None:
-                raise RuntimeError("No video source available!")
+                raise RuntimeError("No video source provided and no local camera found!")
         self.source = source
         self.user_id = user_id
 

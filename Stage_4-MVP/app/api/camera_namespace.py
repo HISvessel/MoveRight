@@ -37,8 +37,8 @@ except:
 
 # Camera start input model
 camera_start_input = camera_api.model('CameraStart', {
-    'source': fields.String(description='Camera source', 
-                           example='http://192.168.9.176:4747/video')
+    'source': fields.String(description='Camera source (e.g., http://... or 0). If omitted, will auto-detect webcam.', 
+                           required=False) # <-- Make source optional
 })
 
 # Camera response model
@@ -116,36 +116,40 @@ class CameraStart(Resource):
     @jwt_required()
     def post(self):
         """Start camera for current user (requires login)"""
-        # Get current user from token
         current_user_id = get_jwt_identity()
 
-        # Check if user already has active camera
+        # 1. This is improved logic: Stop the user's old camera if they start a new one.
         if current_user_id in active_cameras:
-            return {
-                'status': 'error',
-                'message': 'Camera already running for this user'
-            }, 400
+            print(f"[API] Stopping existing camera for user {current_user_id}")
+            active_cameras[current_user_id].stop()
+            del active_cameras[current_user_id]
 
-        # Get camera source from request (optional)
-        #changed the previous IP address with a new one
         data = request.json or {}
-        # source = data.get('source', 'http://192.168.0.8:4747/video') #changed IP for my own source
-        source = data.get('source', 'http://192.168.0.6:8080/video')
-        try:
-            # Create camera instance for this user
-            camera = Camera(source=source, user_id=current_user_id)
+        
+        # 2. This is the dynamic source fix:
+        # 'source' will be None if not provided, triggering auto-detect in camera.py.
+        source = data.get('source') 
 
+        try:
+            # Create camera instance
+            # The Camera's __init__ method AUTOMATICALLY starts its own thread.
+            camera = Camera(source=source, user_id=current_user_id)
+            
             # Store in active cameras
             active_cameras[current_user_id] = camera
 
+            print(f"[API] Camera started for user {current_user_id} with source: {camera.source}")
             return {
                 'status': 'started',
-                'message': 'Camera started successfully',
+                'message': f'Camera started successfully with source: {camera.source}',
                 'fps': camera.get_fps()
             }, 200
 
         except Exception as e:
-            camera.stop() #///////////////////
+            # 4. CRITICAL BUG FIX (This is still correct):
+            # Removed camera.stop(). If camera = Camera(...) fails,
+            # 'camera' does not exist, and calling camera.stop() crashes.
+            print(f"[API] Error starting camera for user {current_user_id}: {str(e)}")
             return {
                 'status': 'error',
                 'message': f'Failed to start camera: {str(e)}'
