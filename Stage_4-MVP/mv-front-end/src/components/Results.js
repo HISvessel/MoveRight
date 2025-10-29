@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { workoutAPI } from '../services/api';
 import '../styles/Results.css';
 import '../styles/App.css';
 import resultsBg from '../assets/logo6.jpeg';
@@ -15,25 +16,31 @@ function Results({ results, exercise, onNavigate, onStartExercise }) {
   ];
 
   useEffect(() => {
-    // Fetch previous sessions for this exercise
     const fetchPreviousSessions = async () => {
       try {
-        const token = localStorage.getItem('token');
+        // Convert exercise name to backend format
+        const exerciseType = exercise.name.toLowerCase().includes('push') ? 'pushup' : 
+                            exercise.name.toLowerCase().includes('squat') ? 'squat' : 
+                            exercise.name.toLowerCase();
         
-        // TODO: Replace with actual API call
-        // const response = await fetch(`http://localhost:5000/api/workouts/history/${exercise.name}?limit=3`, {
-        //   headers: { 'Authorization': `Bearer ${token}` }
-        // });
-        // const data = await response.json();
-        // setPreviousSessions(data);
-
+        // Fetch workouts for THIS exercise type
+        const workouts = await workoutAPI.getAll(exerciseType);
+        
+        // Get last 3 sessions (excluding current one)
+        const formatted = workouts.slice(0, 3).map(w => ({
+          date: w.created_at,
+          reps: w.total_reps,
+          formScore: Math.round(w.average_form_score),
+          duration: w.session_duration
+        }));
+        
+        setPreviousSessions(formatted);
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching previous sessions:', error);
         setIsLoading(false);
       }
     };
-
     fetchPreviousSessions();
   }, [exercise.name]);
 
@@ -67,31 +74,25 @@ function Results({ results, exercise, onNavigate, onStartExercise }) {
 
   const handleSaveWorkout = async () => {
     try {
-      const token = localStorage.getItem('token');
+      // Convert "Push-ups" → "pushup", "Squats" → "squat"
+      const exerciseType = exercise.name.toLowerCase().includes('push') ? 'pushup' : 
+                          exercise.name.toLowerCase().includes('squat') ? 'squat' : 
+                          exercise.name.toLowerCase();
       
-      // TODO: Replace with actual API call to save workout
-      // const response = await fetch('http://localhost:5000/api/workouts', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}`
-      //   },
-      //   body: JSON.stringify({
-      //     exercise: exercise.name,
-      //     reps: results.totalReps,
-      //     sets: results.totalSets,
-      //     duration: results.duration,
-      //     formScore: results.avgFormScore,
-      //     date: results.date
-      //   })
-      // });
+      // Actually call the backend!
+      await workoutAPI.save({
+        exercise_type: exerciseType,           // "pushup" or "squat"
+        total_reps: results.totalReps,         // e.g., 15
+        average_form_score: results.avgFormScore,  // e.g., 87.5
+        session_duration: results.duration,    // e.g., 120 (seconds)
+        rep_details: [{
+          set: results.totalSets,
+          reps: results.totalReps,
+          form_score: results.avgFormScore
+        }]
+      });
       
-      // if (response.ok) {
-      //   alert('Workout saved successfully!');
-      //   onNavigate('dashboard');
-      // }
-
-      alert('Workout saved successfully!');
+      alert('Workout saved successfully!');  // ← NOW it's real!
       onNavigate('dashboard');
     } catch (error) {
       console.error('Error saving workout:', error);

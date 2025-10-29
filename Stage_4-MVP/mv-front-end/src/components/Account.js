@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { userAPI } from '../services/api';
+import { userAPI, workoutAPI } from '../services/api';
 import '../styles/Account.css';
 import '../styles/App.css';
 import accountBg from '../assets/logo2.jpeg';
@@ -31,23 +31,24 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
 
   useEffect(() => {
-    // Fetch user workout stats and history
     const fetchWorkoutData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        
-        // TODO: Replace with actual API calls
-        // const statsResponse = await fetch('http://localhost:5000/api/workouts/stats', {
-        //   headers: { 'Authorization': `Bearer ${token}` }
-        // });
-        // const statsData = await statsResponse.json();
-        // setWorkoutStats(statsData);
+        // Fetch stats
+        const stats = await workoutAPI.getStats();
+        setWorkoutStats(stats);
 
-        // const historyResponse = await fetch('http://localhost:5000/api/workouts/history', {
-        //   headers: { 'Authorization': `Bearer ${token}` }
-        // });
-        // const historyData = await historyResponse.json();
-        // setActivityHistory(historyData);
+        // Fetch ALL workout history
+        const workouts = await workoutAPI.getAll();
+        const formatted = workouts.map(w => ({
+          id: w.id,
+          exercise: w.exercise_type.charAt(0).toUpperCase() + w.exercise_type.slice(1),
+          date: w.created_at,
+          duration: formatTime(w.session_duration),
+          reps: w.total_reps,
+          sets: 1,
+          formScore: Math.round(w.average_form_score)
+        }));
+        setActivityHistory(formatted);
 
         setIsLoadingHistory(false);
       } catch (error) {
@@ -55,9 +56,14 @@ function Account({ user, onNavigate, onUpdateUser, onLogout }) {
         setIsLoadingHistory(false);
       }
     };
-
     fetchWorkoutData();
   }, []);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const getFormScoreBadge = (score) => {
     if (score >= 90) return 'success';

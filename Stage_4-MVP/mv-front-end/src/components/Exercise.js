@@ -13,6 +13,8 @@ function Exercise({ exercise, onNavigate, onComplete }) {
   const [svmPrediction, setSVMPrediction] = useState(null);
   const [angles, setAngles] = useState(null);
   const [svmConfidence, setSVMConfidence] = useState(0);
+  const isInDownPositionRef = useRef(false);
+  const [formScores, setFormScores] = useState([]); // Track all form scores
   
   // WebSocket and Camera state
   const [cameraStatus, setCameraStatus] = useState('stopped');
@@ -50,20 +52,63 @@ function Exercise({ exercise, onNavigate, onComplete }) {
         videoRef.current.src = 'data:image/jpeg;base64,' + data.image;
       }
       if (data.analysis) {
-	if (data.analysis.svm) {
-	  setSVMPrediction(data.analysis.svm.predition);
-	  setSVMConfidence(data.analysis.svm.confidence);
-	  
-	  if (data.analysis.svm.is_good_form) {
-	    setFormScore(Math.min(100, 85 + Math.round(data.analysis.svm.confidence * 5)));
-	  } else {
-	    setFormScore(Math.min(0, 60 - Math.abs(Math.round(data.analysis.svm.confidence * 5))));
-	  }
-	}
+        if (data.analysis.svm) {
+          setSVMPrediction(data.analysis.svm.prediction); //fixed typo here predition => prediction
+          setSVMConfidence(data.analysis.svm.confidence);
+          
+          if (data.analysis.svm.is_good_form) {
+            const score = Math.min(100, 85 + Math.round(data.analysis.svm.confidence * 5));
+            setFormScore(score);
+            setFormScores(prev => [...prev, score]); // ← COLLECT SCORE
+          } else {
+            const score = Math.max(0, 60 - Math.abs(Math.round(data.analysis.svm.confidence * 5)));
+            setFormScore(score);
+            setFormScores(prev => [...prev, score]); // ← COLLECT SCORE
+          }
+        }
 
-	if (data.analysis.angle) {
-	    setAngles(data.analysis.angles);
-	}
+        if (data.analysis.angles) { //fixed typo here angle => angles
+            setAngles(data.analysis.angles);
+            // REP COUNTING LOGIC - ADD THIS SECTION
+            const angles = data.analysis.angles;
+            
+            // Pushup rep counting
+            if (exercise.name.toLowerCase().includes('push')) {
+              const elbowAngle = angles.elbow;
+              
+              // Detect down position (elbow bent < 90 degrees)
+              if (elbowAngle < 90 && !isInDownPositionRef.current) {
+                isInDownPositionRef.current = true;
+                console.log('Pushup: Going down');
+              }
+              
+              // Detect up position (elbow straight > 160 degrees)
+              if (elbowAngle > 160 && isInDownPositionRef.current) {
+                isInDownPositionRef.current = false;
+                setReps(prev => prev + 1);  // COUNT REP!
+                console.log('Pushup: Rep counted!');
+              }
+            }
+            
+            // Squat rep counting
+            if (exercise.name.toLowerCase().includes('squat')) {
+              const kneeAngle = angles.knee;
+              
+              // Detect down position (knees bent < 90 degrees)
+              if (kneeAngle < 90 && !isInDownPositionRef.current) {
+                isInDownPositionRef.current = true;
+                console.log('Squat: Going down');
+              }
+              
+              // Detect up position (knees straight > 160 degrees)
+              if (kneeAngle > 160 && isInDownPositionRef.current) {
+                isInDownPositionRef.current = false;
+                setReps(prev => prev + 1);  // COUNT REP!
+                console.log('Squat: Rep counted!');
+              }
+            }
+            // END REP COUNTING LOGIC
+        }
       }
     });
 
@@ -87,7 +132,14 @@ function Exercise({ exercise, onNavigate, onComplete }) {
         socketRef.current.disconnect();
       }
     };
-  }, []);
+  }, [exercise.name]);
+
+  useEffect(() => {
+  // Reset state when exercise changes
+  setReps(0);
+  isInDownPositionRef.current = false;
+  console.log('Exercise changed, resetting rep counter');
+}, [exercise.name]);
 
   // Recording timer
   useEffect(() => {
@@ -95,10 +147,11 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     if (isRecording) {
       interval = setInterval(() => {
         setRecordingTime(prev => prev + 1);
-        if (recordingTime % 3 === 0 && recordingTime > 0) {
-          setReps(prev => prev + 1);
-        }
-        setFormScore(Math.floor(Math.random() * 20) + 75);
+        // this is fake form scoring removed
+        // if (recordingTime % 3 === 0 && recordingTime > 0) {
+        //   setReps(prev => prev + 1);
+        // }
+        // setFormScore(Math.floor(Math.random() * 20) + 75);
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -213,12 +266,17 @@ function Exercise({ exercise, onNavigate, onComplete }) {
   const handleStopRecording = async () => {
     setIsRecording(false);
     await handleStopCamera();
+
+    // Calculate TRUE average
+    const avgScore = formScores.length > 0 
+      ? Math.round(formScores.reduce((sum, s) => sum + s, 0) / formScores.length)
+      : formScore;
     
     const results = {
       totalReps: reps,
       totalSets: currentSet,
       duration: recordingTime,
-      avgFormScore: formScore,
+      avgFormScore: avgScore,
       date: new Date().toISOString()
     };
     onComplete(results);
@@ -359,7 +417,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
                   </div>
                 )}
 	    	{angles && (
-		<div style={{ margintTop: '1rem', color: 'var(--text-primary)'}}>
+		<div style={{ marginTop: '1rem', color: 'var(--text-primary)'}}>
 		  <p><strong>Joint Angles</strong></p>
 		  {angles.elbow && <p>Elbow: {angles.elbow} degrees </p>}
 		  {angles.body && <p>Body: {angles.body} degrees</p>}

@@ -143,3 +143,50 @@ export const cameraAPI = {
     return apiRequest('/camera/status');
   },
 };
+
+// Workout Results API
+export const workoutAPI = {
+  // Save a workout to database
+  save: async (workoutData) => {
+    return apiRequest('/workout-results/', {
+      method: 'POST',
+      body: JSON.stringify(workoutData),
+    });
+  },
+
+  // Get all workouts (optionally filter by exercise type)
+  getAll: async (exerciseType = null) => {
+    const query = exerciseType ? `?exercise_type=${exerciseType}` : '';
+    return apiRequest(`/workout-results/${query}`);
+  },
+
+  // Calculate statistics from all workouts
+  getStats: async () => {
+    const workouts = await apiRequest('/workout-results/');
+    
+    if (!workouts || workouts.length === 0) {
+      return { totalWorkouts: 0, weekWorkouts: 0, avgFormScore: 0, totalMinutes: 0 };
+    }
+
+    // Count workouts from last 7 days
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const weekWorkouts = workouts.filter(w => new Date(w.created_at) >= weekAgo).length;
+    
+    // Sum up total minutes
+    const totalMinutes = workouts.reduce((sum, w) => sum + Math.floor(w.session_duration / 60), 0);
+    
+    // Calculate average form score
+    const avgFormScore = Math.round(
+      workouts.reduce((sum, w) => sum + w.average_form_score, 0) / workouts.length
+    );
+
+    return { totalWorkouts: workouts.length, weekWorkouts, avgFormScore, totalMinutes };
+  },
+
+  // Get most recent workouts
+  getRecent: async (limit = 5) => {
+    const workouts = await apiRequest('/workout-results/');
+    return workouts.slice(0, limit);
+  }
+};
