@@ -29,8 +29,9 @@ function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
       muscles: 'Quads, Glutes, Core',
       difficulty: 'Beginner',
       description: 'Fundamental lower body exercise for leg strength and stability'
-    },
-    { 
+    }
+];
+/*  Temporarily blocking nonexistent exercises  { 
       id: 3, 
       name: 'Plank', 
       duration: '3 sets x 60 sec', 
@@ -47,7 +48,7 @@ function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
       description: 'Single-leg exercise for balance and lower body strength'
     }
   ];
-
+*/
   useEffect(() => {
     const fetchWorkoutData = async () => {
       try {
