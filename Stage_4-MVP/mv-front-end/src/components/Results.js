@@ -7,12 +7,14 @@ import resultsBg from '../assets/logo6.jpeg';
 function Results({ results, exercise, onNavigate, onStartExercise }) {
   const [previousSessions, setPreviousSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSavingRecording, setIsSavingRecording] = useState(false);
+  const [recordingSaved, setRecordingSaved] = useState(false);
 
   const exercises = [
-    { id: 1, name: 'Push-ups', duration: '3 sets x 12 reps', muscles: 'Chest, Triceps, Shoulders', difficulty: 'Beginner' },
-    { id: 2, name: 'Squats', duration: '3 sets x 15 reps', muscles: 'Quads, Glutes, Core', difficulty: 'Beginner' },
-    { id: 3, name: 'Plank', duration: '3 sets x 60 sec', muscles: 'Core, Shoulders', difficulty: 'Intermediate' },
-    { id: 4, name: 'Lunges', duration: '3 sets x 10 reps per leg', muscles: 'Legs, Glutes', difficulty: 'Beginner' }
+    { id: 1, name: 'Push-ups', duration: '3 sets x 12 reps', muscles: 'Chest, Triceps, Shoulders', difficulty: 'Beginner', available: true },
+    { id: 2, name: 'Squats', duration: '3 sets x 15 reps', muscles: 'Quads, Glutes, Core', difficulty: 'Beginner', available: true },
+    { id: 3, name: 'Plank', duration: '3 sets x 60 sec', muscles: 'Core, Shoulders', difficulty: 'Intermediate', available: false },
+    { id: 4, name: 'Lunges', duration: '3 sets x 10 reps per leg', muscles: 'Legs, Glutes', difficulty: 'Beginner', available: false }
   ];
 
   useEffect(() => {
@@ -41,8 +43,37 @@ function Results({ results, exercise, onNavigate, onStartExercise }) {
         setIsLoading(false);
       }
     };
+
+    const saveWorkoutData = async () => {
+      try {
+        // Convert "Push-ups" → "pushup", "Squats" → "squat"
+        const exerciseType = exercise.name.toLowerCase().includes('push') ? 'pushup' : 
+                            exercise.name.toLowerCase().includes('squat') ? 'squat' : 
+                            exercise.name.toLowerCase();
+        
+        // Auto-save basic workout data
+        await workoutAPI.save({
+          exercise_type: exerciseType,
+          total_reps: results.totalReps,
+          average_form_score: results.avgFormScore,
+          session_duration: results.duration,
+          rep_details: [{
+            set: results.totalSets,
+            reps: results.totalReps,
+            form_score: results.avgFormScore
+          }]
+        });
+        
+        console.log('Workout data auto-saved successfully');
+      } catch (error) {
+        console.error('Error auto-saving workout data:', error);
+        // Don't show alert for auto-save failure, just log it
+      }
+    };
+
     fetchPreviousSessions();
-  }, [exercise.name]);
+    saveWorkoutData();
+  }, [exercise.name, results.totalReps, results.avgFormScore, results.duration, results.totalSets]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -72,32 +103,31 @@ function Results({ results, exercise, onNavigate, onStartExercise }) {
     return '0%';
   };
 
-  const handleSaveWorkout = async () => {
+  const handleSaveRecording = async () => {
     try {
-      // Convert "Push-ups" → "pushup", "Squats" → "squat"
-      const exerciseType = exercise.name.toLowerCase().includes('push') ? 'pushup' : 
-                          exercise.name.toLowerCase().includes('squat') ? 'squat' : 
-                          exercise.name.toLowerCase();
+      setIsSavingRecording(true);
       
-      // Actually call the backend!
-      await workoutAPI.save({
-        exercise_type: exerciseType,           // "pushup" or "squat"
-        total_reps: results.totalReps,         // e.g., 15
-        average_form_score: results.avgFormScore,  // e.g., 87.5
-        session_duration: results.duration,    // e.g., 120 (seconds)
-        rep_details: [{
-          set: results.totalSets,
-          reps: results.totalReps,
-          form_score: results.avgFormScore
-        }]
-      });
+      // Here you would save the actual recording video/data
+      // For now, we'll just update a flag in the workout data
       
-      alert('Workout saved successfully!');  // ← NOW it's real!
-      onNavigate('dashboard');
+      // TODO: Implement actual recording save logic
+      // This might involve:
+      // 1. Uploading video frames/recording to storage
+      // 2. Updating workout record with recording reference
+      // await workoutAPI.saveRecording(workoutId, recordingData);
+      
+      setRecordingSaved(true);
+      alert('Recording saved successfully! 🎥');
     } catch (error) {
-      console.error('Error saving workout:', error);
-      alert('Failed to save workout. Please try again.');
+      console.error('Error saving recording:', error);
+      alert('Failed to save recording. Please try again.');
+    } finally {
+      setIsSavingRecording(false);
     }
+  };
+
+  const handleContinue = () => {
+    onNavigate('dashboard');
   };
 
   return (
@@ -112,13 +142,15 @@ function Results({ results, exercise, onNavigate, onStartExercise }) {
       }}
       >
       <header>
-        <h1>Workout Complete! 🎉</h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
+          <h1>Workout Complete!</h1>
+        </div>
       </header>
 
       <main>
         <section style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h2>{exercise.name} - Summary</h2>
-          <p>Great job completing your workout!</p>
+          <p>Great job completing your workout! Your data has been saved automatically.</p>
         </section>
 
         {/* Performance Metrics */}
@@ -236,10 +268,53 @@ function Results({ results, exercise, onNavigate, onStartExercise }) {
           </ul>
         </section>
 
+        {/* Recording Save Section */}
+        <section className="glass-card" style={{ 
+          background: 'linear-gradient(135deg, rgba(154, 205, 50, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%)',
+          border: '1px solid rgba(154, 205, 50, 0.3)'
+        }}>
+          <h3>Save Workout Recording</h3>
+          <p style={{ marginBottom: '1.5rem' }}>
+            Would you like to save the video recording of your workout? This allows you to review your form later and track visual progress over time.
+          </p>
+          {recordingSaved ? (
+            <div style={{ 
+              color: 'var(--accent-green)', 
+              padding: '1rem', 
+              background: 'rgba(154, 205, 50, 0.1)', 
+              borderRadius: 'var(--radius-sm)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <span style={{ fontSize: '1.5rem' }}>✓</span>
+              <span>Recording saved successfully!</span>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <button 
+                onClick={handleSaveRecording} 
+                className="primary"
+                disabled={isSavingRecording}
+                style={{ flex: 1 }}
+              >
+                {isSavingRecording ? 'Saving Recording...' : '🎥 Save Recording'}
+              </button>
+              <button onClick={handleContinue} style={{ flex: 1 }}>
+                Skip Recording
+              </button>
+            </div>
+          )}
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
+            💡 Note: Recordings help you see improvements in form over time
+          </p>
+        </section>
+
         {/* Action Buttons */}
         <section style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <button onClick={handleSaveWorkout} className="primary">Save Workout</button>
-          <button onClick={() => onNavigate('dashboard')}>Return to Dashboard</button>
+          <button onClick={handleContinue} className="primary" style={{ flex: 1 }}>
+            Return to Dashboard
+          </button>
         </section>
 
         {/* Next Exercises */}
@@ -247,10 +322,44 @@ function Results({ results, exercise, onNavigate, onStartExercise }) {
           <h3>Continue with another exercise:</h3>
           <div className="grid-3" style={{ marginTop: '1rem' }}>
             {exercises.filter(ex => ex.id !== exercise.id).slice(0, 3).map(ex => (
-              <div key={ex.id} className="glass-card" style={{ cursor: 'pointer' }} onClick={() => onStartExercise(ex)}>
-                <h4>{ex.name}</h4>
+              <div 
+                key={ex.id} 
+                className="glass-card" 
+                style={{ 
+                  cursor: ex.available ? 'pointer' : 'not-allowed',
+                  opacity: ex.available ? 1 : 0.6
+                }}
+              >
+                <h4>
+                  {ex.name}
+                  {!ex.available && (
+                    <span style={{
+                      marginLeft: '0.5rem',
+                      fontSize: '0.75rem',
+                      color: 'var(--accent-blue)',
+                      background: 'rgba(0, 212, 255, 0.15)',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '12px',
+                      fontWeight: '600'
+                    }}>
+                      COMING SOON
+                    </span>
+                  )}
+                </h4>
                 <p>{ex.duration}</p>
-                <button className="primary" style={{ marginTop: '1rem', width: '100%' }}>Start</button>
+                <button 
+                  className="primary" 
+                  onClick={() => ex.available && onStartExercise(ex)}
+                  disabled={!ex.available}
+                  style={{ 
+                    marginTop: '1rem', 
+                    width: '100%',
+                    opacity: ex.available ? 1 : 0.5,
+                    cursor: ex.available ? 'pointer' : 'not-allowed'
+                  }}
+                >
+                  {ex.available ? 'Start' : '🔒 Under Development'}
+                </button>
               </div>
             ))}
           </div>

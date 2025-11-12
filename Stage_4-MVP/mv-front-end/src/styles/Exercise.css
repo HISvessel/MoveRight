@@ -51,6 +51,18 @@
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
   margin-bottom: var(--space-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.instructions-list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--accent-green), var(--accent-blue));
 }
 
 .instructions-list ol,
@@ -62,6 +74,11 @@
 .instructions-list li {
   margin-bottom: var(--space-sm);
   line-height: 1.8;
+  transition: color 0.2s ease;
+}
+
+.instructions-list li:hover {
+  color: var(--text-primary);
 }
 
 .start-button-container {
@@ -83,6 +100,11 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
+  transition: border-color 0.3s ease;
+}
+
+.camera-section:hover {
+  border-color: rgba(154, 205, 50, 0.3);
 }
 
 .camera-feed-container {
@@ -94,6 +116,13 @@
   overflow: hidden;
   position: relative;
   border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.camera-feed-container:hover {
+  border-color: rgba(154, 205, 50, 0.4);
+  box-shadow: 0 12px 40px rgba(154, 205, 50, 0.1);
 }
 
 .camera-feed-container img {
@@ -115,6 +144,17 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+  animation: liveGlow 2s ease-in-out infinite;
+}
+
+@keyframes liveGlow {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(255, 0, 0, 0.6);
+  }
 }
 
 .live-indicator::before {
@@ -142,6 +182,7 @@
   border-radius: var(--radius-sm);
   margin-top: var(--space-md);
   border: 1px solid var(--accent-red);
+  animation: slideIn 0.3s ease;
 }
 
 /* Metrics Sidebar */
@@ -158,6 +199,31 @@
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.metric-box:hover {
+  transform: translateY(-4px);
+  border-color: rgba(154, 205, 50, 0.4);
+  box-shadow: 0 8px 24px rgba(154, 205, 50, 0.15);
+}
+
+.metric-box:hover::before {
+  transform: scaleX(1);
 }
 
 .metric-box h4 {
@@ -171,8 +237,16 @@
 .metric-box .value {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--accent-green);
+  background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   line-height: 1;
+  transition: transform 0.3s ease;
+}
+
+.metric-box:hover .value {
+  transform: scale(1.1);
 }
 
 .metric-box .label {
@@ -198,24 +272,33 @@
   margin-bottom: var(--space-sm);
   border-radius: var(--radius-sm);
   font-size: 0.95rem;
+  animation: slideIn 0.3s ease;
+  transition: transform 0.2s ease;
+}
+
+.feedback-item:hover {
+  transform: translateX(4px);
 }
 
 .feedback-item.excellent {
-  background: rgba(164, 255, 0, 0.1);
+  background: rgba(154, 205, 50, 0.1);
   border: 1px solid var(--accent-green);
   color: var(--accent-green);
+  box-shadow: 0 4px 12px rgba(154, 205, 50, 0.2);
 }
 
 .feedback-item.good {
   background: rgba(0, 212, 255, 0.1);
   border: 1px solid var(--accent-blue);
   color: var(--accent-blue);
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
 }
 
 .feedback-item.warning {
   background: rgba(255, 193, 7, 0.1);
   border: 1px solid #ffc107;
   color: #ffc107;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
 }
 
 /* Controls */
@@ -246,11 +329,25 @@
   padding: var(--space-md);
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: timerPulse 1s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .recording-timer.paused {
   color: var(--accent-blue);
+  animation: none;
 }
 
 /* Responsive */

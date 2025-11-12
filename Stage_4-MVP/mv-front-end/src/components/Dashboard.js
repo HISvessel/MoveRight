@@ -12,6 +12,7 @@ function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
   });
   const [recentActivity, setRecentActivity] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFirstTime, setIsFirstTime] = useState(false);
 
   const exercises = [
     { 
@@ -20,7 +21,8 @@ function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
       duration: '3 sets x 12 reps', 
       muscles: 'Chest, Triceps, Shoulders',
       difficulty: 'Beginner',
-      description: 'Classic upper body exercise for building chest and arm strength'
+      description: 'Classic upper body exercise for building chest and arm strength',
+      available: true
     },
     { 
       id: 2, 
@@ -28,16 +30,17 @@ function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
       duration: '3 sets x 15 reps', 
       muscles: 'Quads, Glutes, Core',
       difficulty: 'Beginner',
-      description: 'Fundamental lower body exercise for leg strength and stability'
-    }
-];
-/*  Temporarily blocking nonexistent exercises  { 
+      description: 'Fundamental lower body exercise for leg strength and stability',
+      available: true
+    },
+    { 
       id: 3, 
       name: 'Plank', 
       duration: '3 sets x 60 sec', 
       muscles: 'Core, Shoulders',
       difficulty: 'Intermediate',
-      description: 'Isometric core exercise that builds endurance and stability'
+      description: 'Isometric core strengthening exercise for stability and endurance',
+      available: false
     },
     { 
       id: 4, 
@@ -45,16 +48,22 @@ function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
       duration: '3 sets x 10 reps per leg', 
       muscles: 'Legs, Glutes',
       difficulty: 'Beginner',
-      description: 'Single-leg exercise for balance and lower body strength'
+      description: 'Unilateral leg exercise for balance, strength, and coordination',
+      available: false
     }
   ];
-*/
+
   useEffect(() => {
     const fetchWorkoutData = async () => {
       try {
         // Fetch workout stats
         const stats = await workoutAPI.getStats();
         setWorkoutStats(stats);
+
+        // Check if user is a first-time user (no workouts yet)
+        if (stats.totalWorkouts === 0) {
+          setIsFirstTime(true);
+        }
 
         // Fetch recent activity
         const recent = await workoutAPI.getRecent(5);
@@ -80,17 +89,35 @@ function Dashboard({ user, onNavigate, onStartExercise, onLogout }) {
     fetchWorkoutData();
   }, []);
 
-const formatTime = (seconds) => {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
-};
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const getFormScoreBadge = (score) => {
     if (score >= 90) return 'success';
     if (score >= 75) return 'info';
     return 'warning';
   };
+
+  const getWelcomeMessage = () => {
+    const firstName = user.first_name || user.firstName || user.name;
+    
+    if (isFirstTime) {
+      return {
+        title: `Welcome to MoveRight, ${firstName}!`,
+        subtitle: "Let's start your fitness journey with your first workout!"
+      };
+    }
+    
+    return {
+      title: `Welcome back, ${firstName}!`,
+      subtitle: "Ready to crush your workout?"
+    };
+  };
+
+  const welcomeMessage = getWelcomeMessage();
 
   return (
     <div 
@@ -102,7 +129,7 @@ const formatTime = (seconds) => {
         backgroundAttachment: 'fixed',
         minHeight: '100vh'
       }}
-      >
+    >
       <header>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
           <h1>MoveRight</h1>
@@ -116,8 +143,8 @@ const formatTime = (seconds) => {
 
       <main>
         <section>
-          <h2>Welcome back, {user.first_name || user.firstName || user.name}!</h2>
-          <p>Ready to crush your workout?</p>
+          <h2>{welcomeMessage.title}</h2>
+          <p>{welcomeMessage.subtitle}</p>
         </section>
 
         {/* Stats Grid */}
@@ -138,13 +165,60 @@ const formatTime = (seconds) => {
           </div>
         </section>
 
+        {/* First Time User Banner */}
+        {isFirstTime && (
+          <section className="glass-card" style={{
+            background: 'linear-gradient(135deg, rgba(154, 205, 50, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%)',
+            border: '2px solid rgba(154, 205, 50, 0.3)',
+            marginBottom: '3rem'
+          }}>
+            <h3 style={{ marginBottom: '1rem' }}>🎉 Getting Started with MoveRight</h3>
+            <p style={{ marginBottom: '1rem' }}>
+              Welcome to your AI-powered fitness companion! Here's how to get started:
+            </p>
+            <ul style={{ marginLeft: '2rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
+              <li>Choose an exercise below to begin your first workout</li>
+              <li>Our AI will analyze your form in real-time and provide feedback</li>
+              <li>Track your progress and see improvements over time</li>
+              <li>Complete workouts to unlock detailed analytics and insights</li>
+            </ul>
+            <p style={{ marginTop: '1rem', color: 'var(--accent-green)', fontWeight: '600' }}>
+              💡 Tip: Start with Push-ups or Squats if you're new to working out!
+            </p>
+          </section>
+        )}
+
         {/* Available Workouts */}
         <section>
-          <h3 style={{ marginBottom: '1.5rem' }}>Available Workouts</h3>
+          <h3 style={{ marginBottom: '1.5rem' }}>
+            {isFirstTime ? 'Start Your First Workout' : 'Available Workouts'}
+          </h3>
           <div className="grid-4">
             {exercises.map(exercise => (
-              <div key={exercise.id} className="glass-card" style={{ cursor: 'pointer' }}>
-                <h4>{exercise.name}</h4>
+              <div 
+                key={exercise.id} 
+                className="glass-card" 
+                style={{ 
+                  cursor: exercise.available ? 'pointer' : 'not-allowed',
+                  opacity: exercise.available ? 1 : 0.6
+                }}
+              >
+                <h4>
+                  {exercise.name}
+                  {!exercise.available && (
+                    <span style={{
+                      marginLeft: '0.5rem',
+                      fontSize: '0.75rem',
+                      color: 'var(--accent-blue)',
+                      background: 'rgba(0, 212, 255, 0.15)',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '12px',
+                      fontWeight: '600'
+                    }}>
+                      COMING SOON
+                    </span>
+                  )}
+                </h4>
                 <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>
                   <strong>Duration:</strong> {exercise.duration}
                 </p>
@@ -159,10 +233,18 @@ const formatTime = (seconds) => {
                 <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>{exercise.description}</p>
                 <button 
                   className="primary" 
-                  onClick={() => onStartExercise(exercise)}
-                  style={{ width: '100%' }}
+                  onClick={() => exercise.available && onStartExercise(exercise)}
+                  disabled={!exercise.available}
+                  style={{ 
+                    width: '100%',
+                    opacity: exercise.available ? 1 : 0.5,
+                    cursor: exercise.available ? 'pointer' : 'not-allowed'
+                  }}
                 >
-                  Start Exercise
+                  {exercise.available 
+                    ? (isFirstTime ? '🚀 Start First Workout' : 'Start Exercise')
+                    : '🔒 Under Development'
+                  }
                 </button>
               </div>
             ))}

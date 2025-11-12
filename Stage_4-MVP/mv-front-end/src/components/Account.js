@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { userAPI, workoutAPI } from '../services/api';
 import '../styles/Account.css';
 import '../styles/App.css';
-import accountBg from '../assets/logo2.jpeg';
+import accountBg from '../assets/landmark2.jpeg';
 
 function Account({ user, onNavigate, onUpdateUser, onLogout }) {
   console.log('User object:', user);

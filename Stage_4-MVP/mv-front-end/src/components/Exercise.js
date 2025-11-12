@@ -14,7 +14,11 @@ function Exercise({ exercise, onNavigate, onComplete }) {
   const [angles, setAngles] = useState(null);
   const [svmConfidence, setSVMConfidence] = useState(0);
   const isInDownPositionRef = useRef(false);
-  const [formScores, setFormScores] = useState([]); // Track all form scores
+  const [formScores, setFormScores] = useState([]);
+  
+  // Recording capture
+  const [recordedFrames, setRecordedFrames] = useState([]);
+  const [isCapturingRecording, setIsCapturingRecording] = useState(false);
   
   // WebSocket and Camera state
   const [cameraStatus, setCameraStatus] = useState('stopped');
@@ -51,63 +55,67 @@ function Exercise({ exercise, onNavigate, onComplete }) {
       if (videoRef.current) {
         videoRef.current.src = 'data:image/jpeg;base64,' + data.image;
       }
+
+      // Capture frames for recording if enabled
+      if (isCapturingRecording && isRecording) {
+        setRecordedFrames(prev => [...prev, {
+          image: data.image,
+          timestamp: Date.now(),
+          analysis: data.analysis
+        }]);
+      }
+
       if (data.analysis) {
         if (data.analysis.svm) {
-          setSVMPrediction(data.analysis.svm.prediction); //fixed typo here predition => prediction
+          setSVMPrediction(data.analysis.svm.prediction);
           setSVMConfidence(data.analysis.svm.confidence);
           
           if (data.analysis.svm.is_good_form) {
             const score = Math.min(100, 85 + Math.round(data.analysis.svm.confidence * 5));
             setFormScore(score);
-            setFormScores(prev => [...prev, score]); // ← COLLECT SCORE
+            setFormScores(prev => [...prev, score]);
           } else {
             const score = Math.max(0, 60 - Math.abs(Math.round(data.analysis.svm.confidence * 5)));
             setFormScore(score);
-            setFormScores(prev => [...prev, score]); // ← COLLECT SCORE
+            setFormScores(prev => [...prev, score]);
           }
         }
 
-        if (data.analysis.angles) { //fixed typo here angle => angles
-            setAngles(data.analysis.angles);
-            // REP COUNTING LOGIC - ADD THIS SECTION
-            const angles = data.analysis.angles;
+        if (data.analysis.angles) {
+          setAngles(data.analysis.angles);
+          const angles = data.analysis.angles;
+          
+          // Pushup rep counting
+          if (exercise.name.toLowerCase().includes('push')) {
+            const elbowAngle = angles.elbow;
             
-            // Pushup rep counting
-            if (exercise.name.toLowerCase().includes('push')) {
-              const elbowAngle = angles.elbow;
-              
-              // Detect down position (elbow bent < 90 degrees)
-              if (elbowAngle < 90 && !isInDownPositionRef.current) {
-                isInDownPositionRef.current = true;
-                console.log('Pushup: Going down');
-              }
-              
-              // Detect up position (elbow straight > 160 degrees)
-              if (elbowAngle > 160 && isInDownPositionRef.current) {
-                isInDownPositionRef.current = false;
-                setReps(prev => prev + 1);  // COUNT REP!
-                console.log('Pushup: Rep counted!');
-              }
+            if (elbowAngle < 90 && !isInDownPositionRef.current) {
+              isInDownPositionRef.current = true;
+              console.log('Pushup: Going down');
             }
             
-            // Squat rep counting
-            if (exercise.name.toLowerCase().includes('squat')) {
-              const kneeAngle = angles.knee;
-              
-              // Detect down position (knees bent < 90 degrees)
-              if (kneeAngle < 90 && !isInDownPositionRef.current) {
-                isInDownPositionRef.current = true;
-                console.log('Squat: Going down');
-              }
-              
-              // Detect up position (knees straight > 160 degrees)
-              if (kneeAngle > 160 && isInDownPositionRef.current) {
-                isInDownPositionRef.current = false;
-                setReps(prev => prev + 1);  // COUNT REP!
-                console.log('Squat: Rep counted!');
-              }
+            if (elbowAngle > 160 && isInDownPositionRef.current) {
+              isInDownPositionRef.current = false;
+              setReps(prev => prev + 1);
+              console.log('Pushup: Rep counted!');
             }
-            // END REP COUNTING LOGIC
+          }
+          
+          // Squat rep counting
+          if (exercise.name.toLowerCase().includes('squat')) {
+            const kneeAngle = angles.knee;
+            
+            if (kneeAngle < 90 && !isInDownPositionRef.current) {
+              isInDownPositionRef.current = true;
+              console.log('Squat: Going down');
+            }
+            
+            if (kneeAngle > 160 && isInDownPositionRef.current) {
+              isInDownPositionRef.current = false;
+              setReps(prev => prev + 1);
+              console.log('Squat: Rep counted!');
+            }
+          }
         }
       }
     });
@@ -132,14 +140,13 @@ function Exercise({ exercise, onNavigate, onComplete }) {
         socketRef.current.disconnect();
       }
     };
-  }, [exercise.name]);
+  }, [exercise.name, isCapturingRecording, isRecording]);
 
   useEffect(() => {
-  // Reset state when exercise changes
-  setReps(0);
-  isInDownPositionRef.current = false;
-  console.log('Exercise changed, resetting rep counter');
-}, [exercise.name]);
+    setReps(0);
+    isInDownPositionRef.current = false;
+    console.log('Exercise changed, resetting rep counter');
+  }, [exercise.name]);
 
   // Recording timer
   useEffect(() => {
@@ -147,11 +154,6 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     if (isRecording) {
       interval = setInterval(() => {
         setRecordingTime(prev => prev + 1);
-        // this is fake form scoring removed
-        // if (recordingTime % 3 === 0 && recordingTime > 0) {
-        //   setReps(prev => prev + 1);
-        // }
-        // setFormScore(Math.floor(Math.random() * 20) + 75);
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -174,9 +176,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          // source: 'http://192.168.9.176:4747/video'
-        })
+        body: JSON.stringify({})
       });
 
       const data = await response.json();
@@ -225,16 +225,16 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     console.log('Starting stream.');
 
     if (socketRef.current && userId) {
-      let exerciseType = 'squat'; //default to squat, but why?
+      let exerciseType = 'squat';
       if (exercise.name.toLowerCase().includes('push')) {
-	exerciseType = 'pushup';
+        exerciseType = 'pushup';
       } else if (exercise.name.toLowerCase().includes('squat')) {
-	exerciseType = 'squat';
+        exerciseType = 'squat';
       }
       console.log(`Starting stream with ${exerciseType}`);
       socketRef.current.emit('start_stream', { 
-	user_id: userId,
-      	exercise: exerciseType
+        user_id: userId,
+        exercise: exerciseType
       });
     } else {
       console.error('Cannot start stream - payload data missing.');
@@ -251,6 +251,18 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     await handleStartCamera();
     setPhase('recording');
     setIsRecording(true);
+    // Start capturing frames if user wants to save recording
+    // They can toggle this during workout
+  };
+
+  const handleToggleRecordingCapture = () => {
+    setIsCapturingRecording(!isCapturingRecording);
+    if (!isCapturingRecording) {
+      setRecordedFrames([]); // Reset frames when starting new capture
+      alert('Recording capture enabled! Your workout will be saved.');
+    } else {
+      alert('Recording capture disabled. Only workout data will be saved.');
+    }
   };
 
   const handlePauseRecording = () => {
@@ -267,7 +279,7 @@ function Exercise({ exercise, onNavigate, onComplete }) {
     setIsRecording(false);
     await handleStopCamera();
 
-    // Calculate TRUE average
+    // Calculate average form score
     const avgScore = formScores.length > 0 
       ? Math.round(formScores.reduce((sum, s) => sum + s, 0) / formScores.length)
       : formScore;
@@ -277,8 +289,12 @@ function Exercise({ exercise, onNavigate, onComplete }) {
       totalSets: currentSet,
       duration: recordingTime,
       avgFormScore: avgScore,
-      date: new Date().toISOString()
+      date: new Date().toISOString(),
+      recordedFrames: isCapturingRecording ? recordedFrames : null,
+      hasRecording: isCapturingRecording
     };
+    
+    console.log(`Workout completed with ${isCapturingRecording ? recordedFrames.length : 0} recorded frames`);
     onComplete(results);
   };
 
@@ -355,8 +371,26 @@ function Exercise({ exercise, onNavigate, onComplete }) {
         <header>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
             <h1>{exercise.name}</h1>
-            <div className={`recording-timer ${phase === 'paused' ? 'paused' : ''}`}>
-              {formatTime(recordingTime)} {phase === 'paused' && '(PAUSED)'}
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <div className={`recording-timer ${phase === 'paused' ? 'paused' : ''}`}>
+                {formatTime(recordingTime)} {phase === 'paused' && '(PAUSED)'}
+              </div>
+              {isCapturingRecording && (
+                <div style={{ 
+                  background: 'rgba(255, 0, 0, 0.9)', 
+                  color: 'white', 
+                  padding: '0.5rem 1rem', 
+                  borderRadius: '20px',
+                  fontSize: '0.875rem',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <span style={{ fontSize: '1rem' }}>●</span>
+                  REC
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -402,6 +436,34 @@ function Exercise({ exercise, onNavigate, onComplete }) {
                 <div className="value">{formScore}%</div>
               </div>
 
+              {/* Recording Status */}
+              <div className="metric-box" style={{ 
+                background: isCapturingRecording ? 'rgba(255, 0, 0, 0.1)' : 'var(--bg-card)',
+                border: isCapturingRecording ? '1px solid rgba(255, 0, 0, 0.3)' : '1px solid var(--border-color)'
+              }}>
+                <h4>Recording</h4>
+                <button 
+                  onClick={handleToggleRecordingCapture}
+                  style={{ 
+                    width: '100%', 
+                    padding: '0.75rem',
+                    background: isCapturingRecording ? 'var(--accent-red)' : 'var(--bg-tertiary)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 'var(--radius-sm)',
+                    fontWeight: 'bold',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  {isCapturingRecording ? '● Stop Recording' : '○ Start Recording'}
+                </button>
+                {isCapturingRecording && (
+                  <div className="label" style={{ marginTop: '0.5rem' }}>
+                    {recordedFrames.length} frames
+                  </div>
+                )}
+              </div>
+
               {/* Form Feedback */}
               <div className="form-feedback">
                 <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Form Feedback</h4>
@@ -413,23 +475,23 @@ function Exercise({ exercise, onNavigate, onComplete }) {
 
                 {svmPrediction === 'bad' && (
                   <div className="feedback-item warning">
-                    ⚠ Adjust your form (Confidence : {Math.abs(svmConfidence).toFixed(2)})
+                    ⚠ Adjust your form (Confidence: {Math.abs(svmConfidence).toFixed(2)})
                   </div>
                 )}
-	    	{angles && (
-		<div style={{ marginTop: '1rem', color: 'var(--text-primary)'}}>
-		  <p><strong>Joint Angles</strong></p>
-		  {angles.elbow && <p>Elbow: {angles.elbow} degrees </p>}
-		  {angles.body && <p>Body: {angles.body} degrees</p>}
-		  {angles.shoulder && <p>Shoulder: {angles.shoulder} degrees</p>}
-		  {angles.knee && <p>Knee: {angles.knee} degrees</p>}
-		  {angles.hip && <p>Hip: {angles.hip} degrees</p>}
-		  {angles.body && <p>Body: {angles.body} degrees</p>}
-      </div>
-		)}
+                {angles && (
+                  <div style={{ marginTop: '1rem', color: 'var(--text-primary)'}}>
+                    <p><strong>Joint Angles</strong></p>
+                    {angles.elbow && <p>Elbow: {angles.elbow}°</p>}
+                    {angles.body && <p>Body: {angles.body}°</p>}
+                    {angles.shoulder && <p>Shoulder: {angles.shoulder}°</p>}
+                    {angles.knee && <p>Knee: {angles.knee}°</p>}
+                    {angles.hip && <p>Hip: {angles.hip}°</p>}
+                  </div>
+                )}
               </div>
             </div>
-	</div>
+          </div>
+
           {/* Controls */}
           <section className="controls-section">
             <h3>Controls</h3>

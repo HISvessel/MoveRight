@@ -154,6 +154,24 @@ export const workoutAPI = {
     });
   },
 
+  // Save workout recording (video frames)
+  saveRecording: async (workoutId, recordingData) => {
+    return apiRequest(`/workout-results/${workoutId}/recording`, {
+      method: 'POST',
+      body: JSON.stringify({
+        frames: recordingData.frames,
+        duration: recordingData.duration,
+        fps: recordingData.fps || 30,
+        metadata: recordingData.metadata || {}
+      }),
+    });
+  },
+
+  // Get workout recording
+  getRecording: async (workoutId) => {
+    return apiRequest(`/workout-results/${workoutId}/recording`);
+  },
+
   // Get all workouts (optionally filter by exercise type)
   getAll: async (exerciseType = null) => {
     const query = exerciseType ? `?exercise_type=${exerciseType}` : '';
