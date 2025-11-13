@@ -1,0 +1,11 @@
+{
+  "name": "moveright-backend",
+  "deployment": {
+    "buildCommand": "docker build -t moveright-backend .",
+    "runCommand": "docker run -p 5000:5000 moveright-backend"
+  },
+  "env": {
+    "JWT_SECRET_KEY": "123",
+    "FLASK_ENV": "production"
+  }
+}

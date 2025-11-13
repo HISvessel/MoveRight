@@ -1,0 +1,99 @@
+.page-login {
+  min-height: 100vh;
+  position: relative;
+}
+
+.page-login::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(135deg, rgba(15, 15, 15, 0.93) 0%, rgba(15, 15, 15, 0.85) 100%),
+    url('../assets/moveright-logo.jpeg') center/cover no-repeat;
+  z-index: -1;
+}
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.login-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-xl);
+  width: 100%;
+  max-width: 450px;
+}
+
+.login-card h2 {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  color: var(--text-primary);
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.error {
+  color: var(--accent-red);
+  font-size: 0.875rem;
+  margin-top: -0.5rem;
+  margin-bottom: var(--space-sm);
+}
+
+.general-error {
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid var(--accent-red);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  color: var(--accent-red);
+}
+
+.forgot-password-btn {
+  background: transparent;
+  border: none;
+  color: var(--accent-green);
+  text-align: left;
+  padding: 0;
+  margin-bottom: var(--space-md);
+  font-size: 0.9rem;
+}
+
+.forgot-password-btn:hover {
+  color: var(--accent-green-hover);
+  text-decoration: underline;
+  transform: none;
+}
+
+.login-card p {
+  text-align: center;
+  margin-top: var(--space-md);
+  color: var(--text-secondary);
+}
+
+.login-card p button {
+  background: transparent;
+  border: none;
+  color: var(--accent-green);
+  padding: 0;
+  font-size: 1rem;
+}
+
+.login-card p button:hover {
+  color: var(--accent-green-hover);
+  text-decoration: underline;
+  transform: none;
+}

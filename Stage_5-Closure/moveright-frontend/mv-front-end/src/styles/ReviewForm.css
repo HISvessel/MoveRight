@@ -1,0 +1,98 @@
+.page-review {
+  min-height: 100vh;
+  position: relative;
+}
+
+.page-review::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(135deg, rgba(15, 15, 15, 0.93) 0%, rgba(15, 15, 15, 0.85) 100%),
+    url('../assets/logo7.jpeg') center/cover no-repeat;
+  z-index: -1;
+}
+
+.review-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.review-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: var(--space-xl);
+  margin-top: var(--space-lg);
+}
+
+.star-rating {
+  display: flex;
+  gap: 0.5rem;
+  margin: var(--space-md) 0;
+}
+
+.star-button {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.star-button:hover {
+  color: var(--accent-green);
+  transform: scale(1.1);
+}
+
+.star-button.filled {
+  color: var(--accent-green);
+}
+
+.error {
+  color: var(--accent-red);
+  font-size: 0.875rem;
+  margin-top: -0.5rem;
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.general-error {
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid var(--accent-red);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  color: var(--accent-red);
+}
+
+.posting-as {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.posting-as p {
+  margin: 0;
+}
+
+.success-container {
+  text-align: center;
+  padding: var(--space-xl);
+}
+
+.success-container h2 {
+  color: var(--accent-green);
+  margin-bottom: var(--space-md);
+}

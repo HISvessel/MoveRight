@@ -1,0 +1,62 @@
+.page-account {
+  min-height: 100vh;
+  position: relative;
+}
+
+.page-account::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(135deg, rgba(15, 15, 15, 0.93) 0%, rgba(15, 15, 15, 0.85) 100%),
+    url('../assets/landmark2.jpeg') center/cover no-repeat;
+  z-index: -1;
+}
+
+.danger-zone {
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+/* Checkbox alignment fix */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.checkbox-label:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent-green);
+}
+
+.checkbox-label span {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}

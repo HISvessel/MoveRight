@@ -1,0 +1,10 @@
+{
+  "name": "moveright-frontend",
+  "deployment": {
+    "buildCommand": "docker build -t moveright-frontend .",
+    "runCommand": "docker run -p 80:80 moveright-frontend"
+  },
+  "env": {
+    "REACT_APP_API_URL": "https://your-backend-url.ondis.co"
+  }
+}

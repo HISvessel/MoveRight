@@ -1,0 +1,288 @@
+.page-landing {
+  min-height: 100vh;
+  position: relative;
+}
+
+.page-landing::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(135deg, rgba(15, 15, 15, 0.93) 0%, rgba(15, 15, 15, 0.85) 100%),
+    url('../assets/landingpage.jpeg') center/cover no-repeat;
+  z-index: -1;
+}
+
+/* Header */
+.landing-header {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-md) var(--space-lg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.landing-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.landing-header h1 {
+  font-size: 1.75rem;
+  margin: 0;
+  background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  padding: 6rem 2rem 4rem;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(154, 205, 50, 0.1) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+.hero-section h2 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: var(--space-lg);
+  line-height: 1.2;
+  background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section p {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section button {
+  font-size: 1.125rem;
+  padding: 1.125rem 2.5rem;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 8px 24px rgba(154, 205, 50, 0.3);
+}
+
+.hero-section button:hover {
+  box-shadow: 0 12px 32px rgba(154, 205, 50, 0.4);
+  transform: translateY(-4px);
+}
+
+/* Features Section */
+.features-section {
+  padding: var(--space-xl) var(--space-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.features-section h3 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: var(--space-xl);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.feature-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.feature-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(154, 205, 50, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-12px);
+  border-color: rgba(154, 205, 50, 0.4);
+  box-shadow: 0 20px 60px rgba(154, 205, 50, 0.2);
+}
+
+.feature-card:hover::before {
+  transform: scaleX(1);
+}
+
+.feature-card:hover::after {
+  width: 400px;
+  height: 400px;
+}
+
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--space-lg);
+  background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(154, 205, 50, 0.3);
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 32px rgba(154, 205, 50, 0.4);
+}
+
+.feature-card h4 {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+  position: relative;
+  z-index: 1;
+}
+
+.feature-card p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Reviews Section */
+.reviews-section {
+  padding: var(--space-xl) var(--space-lg);
+  background: rgba(0, 0, 0, 0.3);
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Footer */
+.landing-footer {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-color);
+  padding: var(--space-lg);
+  text-align: center;
+  margin-top: var(--space-xl);
+}
+
+.landing-footer p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .hero-section h2 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 4rem 1.5rem 3rem;
+  }
+  
+  .hero-section h2 {
+    font-size: 2rem;
+  }
+  
+  .hero-section p {
+    font-size: 1.125rem;
+  }
+  
+  .features-section h3 {
+    font-size: 2rem;
+  }
+  
+  .feature-card {
+    padding: var(--space-lg);
+  }
+}

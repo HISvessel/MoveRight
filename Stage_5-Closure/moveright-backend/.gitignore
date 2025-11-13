@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+venv
+build/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+ENV/
+.venv/
