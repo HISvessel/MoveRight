@@ -20,3 +20,5 @@ pytest-cov
 python-socketio
 scikit-learn==1.3.0
 joblib==1.3.2
+gunicorn==21.2.0
+psycopg2-binary==2.9.7
